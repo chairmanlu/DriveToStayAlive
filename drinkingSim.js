@@ -328,13 +328,13 @@ function playGame(){
 			if(car.speed>20){
 				car.speed=20;
 			}
-			if(turningLeft){
+			if(turningLeft&&car.speed>0){
 				car.wheelDeg-=turnAmt;
 				if(car.wheelDeg<-80){
 					car.wheelDeg=-80;
 				}
 			}
-			if(turningRight){
+			if(turningRight&&car.speed>0){
 				car.wheelDeg+=turnAmt;
 				if(car.wheelDeg>80){
 					car.wheelDeg=80;
