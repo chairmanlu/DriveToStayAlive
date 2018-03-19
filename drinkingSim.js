@@ -262,33 +262,52 @@ function playGame(){
 			wheelDeg:0//Degree of wheel with respect to x axis.
 		}
 
+		var turningRight=false;
+		var turningLeft=false;
+
 		window.onkeydown = function(e){
 			var code=e.keyCode?e.keyCode:e.which;
 			switch(code){
 				case 37:
 					//Left
-					car.wheelDeg-=5;
-					if(car.wheelDeg<-80){
-						car.wheelDeg=-80;
-					}
+					turningLeft=true;
 					break;
 				case 38:
 					//Up
-					car.accel+=0.1;
+					car.accel=0.5;
 					break;
 				case 39:
 					//Right
-					car.wheelDeg+=5;
-					if(car.wheelDeg>80){
-						car.wheelDeg=80;
-					}
+					turningRight=true;
 					break;
 				case 40:
 					//Down
-					car.accel-=0.5;
+					car.accel=-1;
 					if(car.accel<-2){
 						car.accel=-2;
 					}
+					break;
+			}
+		}
+
+		window.onkeyup = function(e){
+			var code=e.keyCode?e.keyCode:e.which;
+			switch(code){
+				case 37:
+					//Left
+					turningLeft=false;
+					break;
+				case 38:
+					//Up
+					car.accel=0;
+					break;
+				case 39:
+					//Right
+					turningRight=false;
+					break;
+				case 40:
+					//Down
+					car.accel=0;
 					break;
 			}
 		}
@@ -297,28 +316,38 @@ function playGame(){
 			moveEverything();
 			drawEverything();
 		},1000/fps);
-		setInterval(revert,100);
-
-		function revert(){
-			if(car.accel>0){
-				car.accel-=0.01;
-			}
-			if(car.wheelDeg>0){
-				car.wheelDeg--;
-			}
-			else if(car.wheelDeg<0){
-				car.wheelDeg++;
-			}
-		}
 
 		function moveEverything(){
+			var turnAmt=1/*Math.floor(Math.random()*10)*/;
 			car.speed+=car.accel;
+			car.speed-=0.1;
 			if(car.speed<0){
 				car.speed=0;
 				car.accel=0;
 			}
-			if(car.speed>3){
-				car.speed=3;
+			if(car.speed>20){
+				car.speed=20;
+			}
+			if(turningLeft){
+				car.wheelDeg-=turnAmt;
+				if(car.wheelDeg<-80){
+					car.wheelDeg=-80;
+				}
+			}
+			if(turningRight){
+				car.wheelDeg+=turnAmt;
+				if(car.wheelDeg>80){
+					car.wheelDeg=80;
+				}
+			}
+			//Revert
+			else if(!turningLeft){
+				if(car.wheelDeg>0){
+					car.wheelDeg--;
+				}
+				else if(car.wheelDeg<0){
+					car.wheelDeg++;
+				}
 			}
 			car.xVel=car.speed*Math.cos(car.wheelDeg*Math.PI/180);
 			car.yVel=car.speed*Math.sin(car.wheelDeg*Math.PI/180);
@@ -334,7 +363,7 @@ function playGame(){
 			context.fillRect(0,0,width,height);
 			//Road
 			context.fillStyle="#000000";
-			context.fillRect(0,height/3,width,height/3);
+			context.fillRect(0,height/6,width,2*height/3);
 
 			//Center Line
 			context.strokeStyle="#FFFF00";
@@ -344,6 +373,20 @@ function playGame(){
 			context.lineTo(width,height/2);
 			context.stroke();
 
+			//Dotted Lines
+			context.strokeStyle="#FFFFFF";
+			var startPixel=100-(car.xPos%100);
+			for(var i=-1;i<=width/100;i++){
+				context.beginPath();
+				context.moveTo(i*100+startPixel,height/3);
+				context.lineTo((i*100)+startPixel+75,height/3);
+				context.stroke();
+				context.beginPath();
+				context.moveTo(i*100+startPixel,2*height/3);
+				context.lineTo((i*100)+startPixel+75,2*height/3);
+				context.stroke();
+			}
+
 			//Car
 			var carImg=new Image();
 			/*car.onload = function(){
@@ -351,13 +394,13 @@ function playGame(){
 			}*/
 			var num=1;
 			carImg.src="images/CarRight"+num+".png";
-			context.translate(car.xPos, car.yPos);
+			context.translate(10+height/10, car.yPos);
 			context.rotate(car.wheelDeg*Math.PI/180);
-			context.drawImage(carImg,-car.width/2,-car.height/2,car.width,car.height);
+			context.drawImage(carImg,0,(-car.height/2),car.width,car.height);
 			//context.fillStyle="#FF0000";
 			//context.fillRect(-car.width/2,-car.height/2,car.width,car.height);
 			context.rotate(-1*car.wheelDeg*Math.PI/180);
-			context.translate(-car.xPos, -car.yPos);
+			context.translate(-(10+height/10), -car.yPos);
 		}
 	}
 }
