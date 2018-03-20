@@ -249,7 +249,7 @@ function playGame(){
 	}
 
 	function drive(){
-		alert("drive called");
+		//alert("drive called");
 		context.clearRect(0,0,width,height);
 		var fps=60;
 
@@ -467,7 +467,7 @@ function playGame(){
 	}
 
 		function drawEverything(){
-			console.log("drawn");
+			//console.log("drawn");
 			if(crashed){
 				return;
 			}
