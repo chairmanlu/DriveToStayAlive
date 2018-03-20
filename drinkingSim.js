@@ -171,13 +171,9 @@ function playGame(){
 				bac+=0.02;
 				//alert("removed");
 				drawMenu(false);
-				if(bac===0.02){
+				if(bac===0.04){
 					canvas.removeEventListener("click",gameClickListener);
-					drawAlert(0.02);
-				}
-				else if(bac===0.06){
-					canvas.removeEventListener("click",gameClickListener);
-					drawAlert(0.06);
+					drawAlert(0.04);
 				}
 				else if(bac===0.08){
 					canvas.removeEventListener("click",gameClickListener);
@@ -202,9 +198,7 @@ function playGame(){
 		function drawAlert(n){
 			canvas.removeEventListener("click",gameClickListener);
 			switch(n){
-				case 0.02:
-					break;
-				case 0.06:
+				case 0.04:
 					break;
 				case 0.08:
 					break;
@@ -269,6 +263,9 @@ function playGame(){
 		var turningLeft=false;
 
 		var maxSpeed=30;
+		if(bac>=0.08){
+			maxSpeed=60;
+		}
 		var mph=0;
 		var distTraveled=0;
 		//Other Cars
@@ -287,13 +284,21 @@ function playGame(){
 		}
 
 		var otherCarSpeed=maxSpeed/2;
+		if(bac>=0.08){
+			otherCarSpeed=maxSpeed/4;
+		}
 
 		window.onkeydown = function(e){
 			var code=e.keyCode?e.keyCode:e.which;
 			switch(code){
 				case 37:
 					//Left
-					turningLeft=true;
+					if(bac>=0.1){
+						setTimeout(function(){turningLeft=true;},bac*5*1000);
+					}
+					else{
+						turningLeft=true;
+					}
 					break;
 				case 38:
 					//Up
@@ -301,7 +306,12 @@ function playGame(){
 					break;
 				case 39:
 					//Right
-					turningRight=true;
+					if(bac>=0.1){
+						setTimeout(function(){turningRight=true;},bac*5*1000);
+					}
+					else{
+						turningRight=true;
+					}
 					break;
 				case 40:
 					//Down
@@ -315,7 +325,12 @@ function playGame(){
 			switch(code){
 				case 37:
 					//Left
-					turningLeft=false;
+					if(bac>=0.1){
+						setTimeout(function(){turningLeft=false;},bac*5*1000);
+					}
+					else{
+						turningLeft=false;
+					}
 					break;
 				case 38:
 					//Up
@@ -323,7 +338,12 @@ function playGame(){
 					break;
 				case 39:
 					//Right
-					turningRight=false;
+					if(bac>=0.1){
+						setTimeout(function(){turningRight=false;},bac*5*1000);
+					}
+					else{
+						turningRight=false;
+					}
 					break;
 				case 40:
 					//Down
@@ -345,6 +365,9 @@ function playGame(){
 
 		function moveEverything(){
 			var turnAmt=1/*Math.floor(Math.random()*10)*/;
+			if(bac>=0.06){//BAC 0.06 Erratic Turning
+				turnAmt=Math.ceil(Math.random()*5);
+			}
 			car.speed+=car.accel;
 			car.speed-=0.1;
 			if(car.speed<0){
@@ -413,32 +436,32 @@ function playGame(){
 
 				//Check Collisions
 				rect2={
-					left:rightCars[i]+car.width/8,
-					right:rightCars[i]+car.width-car.width/8,
+					left:rightCars[i]+car.width/16,
+					right:rightCars[i]+car.width-car.width/16,
 					top:height/2+height/30+height/20-car.height/2+(i%2*height/6)+car.height/16,
 					bottom:height/2+height/30+height/20-car.height/2+(i%2*height/6)+car.height-car.height/16
 				}
 				rect3={
-					left:leftCars[i]+car.width/8,
-					right:leftCars[i]+car.width-car.width/8,
+					left:leftCars[i]+car.width/16,
+					right:leftCars[i]+car.width-car.width/16,
 					top:height/2-height/30-height/20-height/6-car.height/2+(i%2*height/6)+car.height/16,
 					bottom:height/2-height/30-height/20-height/6-car.height/2+(i%2*height/6)+car.height-car.height/16
 				}
 				//Rectangle formula by Sunjae Lee.
 				var p1={
-					x:(10+height/10)+(4*car.width/5)/2*Math.cos(car.wheelDeg*Math.PI/180)-(4*car.height/5)/2*Math.sin(car.wheelDeg*Math.PI/180),
-					y:car.yPos+(4*car.width/5)/2*Math.sin(car.wheelDeg*Math.PI/180)+(4*car.height/5)/2*Math.cos(car.wheelDeg*Math.PI/180)
+					x:(10+height/10)+(7*car.width/8)/2*Math.cos(car.wheelDeg*Math.PI/180)-(4*car.height/5)/2*Math.sin(car.wheelDeg*Math.PI/180),
+					y:car.yPos+(7*car.width/8)/2*Math.sin(car.wheelDeg*Math.PI/180)+(4*car.height/5)/2*Math.cos(car.wheelDeg*Math.PI/180)
 				}
 				var p4={
-					x:(10+height/10)+(4*car.width/5)/2*Math.cos(car.wheelDeg*Math.PI/180)+(4*car.height/5)/2*Math.sin(car.wheelDeg*Math.PI/180),
-					y:car.yPos+(4*car.width/5)/2*Math.sin(car.wheelDeg*Math.PI/180)-(4*car.height/5)/2*Math.cos(car.wheelDeg*Math.PI/180)
+					x:(10+height/10)+(7*car.width/8)/2*Math.cos(car.wheelDeg*Math.PI/180)+(4*car.height/5)/2*Math.sin(car.wheelDeg*Math.PI/180),
+					y:car.yPos+(7*car.width/8)/2*Math.sin(car.wheelDeg*Math.PI/180)-(4*car.height/5)/2*Math.cos(car.wheelDeg*Math.PI/180)
 				}
 				var p2={
-					x:(10+height/10)-(4*car.width/5)/2*Math.cos(car.wheelDeg*Math.PI/180)-(4*car.height/5)/2*Math.sin(car.wheelDeg*Math.PI/180),
-					y:car.yPos-(4*car.width/5)/2*Math.sin(car.wheelDeg*Math.PI/180)+(4*car.height/5)/2*Math.cos(car.wheelDeg*Math.PI/180)
+					x:(10+height/10)-(7*car.width/8)/2*Math.cos(car.wheelDeg*Math.PI/180)-(4*car.height/5)/2*Math.sin(car.wheelDeg*Math.PI/180),
+					y:car.yPos-(7*car.width/8)/2*Math.sin(car.wheelDeg*Math.PI/180)+(4*car.height/5)/2*Math.cos(car.wheelDeg*Math.PI/180)
 				}
 				var p3={
-					x:(10+height/10)-(4*car.width/5)/2*Math.cos(car.wheelDeg*Math.PI/180)+(4*car.height/5)/2*Math.sin(car.wheelDeg*Math.PI/180),
+					x:(10+height/10)-(7*car.width/8)/2*Math.cos(car.wheelDeg*Math.PI/180)+(4*car.height/5)/2*Math.sin(car.wheelDeg*Math.PI/180),
 					y:car.yPos-(4*car.width/5)/2*Math.sin(car.wheelDeg*Math.PI/180)-(4*car.height/5)/2*Math.cos(car.wheelDeg*Math.PI/180)
 				}
 
@@ -447,61 +470,7 @@ function playGame(){
 				var pol2=[{x:rect2.left,y:rect2.top},{x:rect2.right,y:rect2.top},{x:rect2.right,y:rect2.bottom},{x:rect2.left,y:rect2.bottom}];
 				var pol3=[{x:rect3.left,y:rect3.top},{x:rect3.right,y:rect3.top},{x:rect3.right,y:rect3.bottom},{x:rect3.left,y:rect3.bottom}];
 				//console.log(pol2[0].x+","+pol2[0].y);
-				//Hitbox Debug
-				/*context.strokeStyle="#FFFF00";
-				context.lineWidth="4";
-				context.beginPath();
-				context.moveTo(p1.x,p1.y);
-				context.lineTo(p2.x,p2.y);
-				context.stroke();
-				context.beginPath();
-				context.moveTo(p2.x,p2.y);
-				context.lineTo(p4.x,p4.y);
-				context.stroke();
-				context.beginPath();
-				context.moveTo(p3.x,p3.y);
-				context.lineTo(p4.x,p4.y);
-				context.stroke();
-				context.beginPath();
-				context.moveTo(p3.x,p3.y);
-				context.lineTo(p1.x,p1.y);
-				context.stroke();
-
-				context.strokeStyle="#FF0000";
-				context.beginPath();
-				context.moveTo(pol2[0].x,pol2[0].y);
-				context.lineTo(pol2[1].x,pol2[1].y);
-				context.stroke();
-				context.beginPath();
-				context.moveTo(pol2[0].x,pol2[0].y);
-				context.lineTo(pol2[3].x,pol2[3].y);
-				context.stroke();
-				context.beginPath();
-				context.moveTo(pol2[2].x,pol2[2].y);
-				context.lineTo(pol2[1].x,pol2[1].y);
-				context.stroke();
-				context.beginPath();
-				context.moveTo(pol2[3].x,pol2[3].y);
-				context.lineTo(pol2[2].x,pol2[2].y);
-				context.stroke();
-
-				context.beginPath();
-				context.moveTo(pol3[0].x,pol3[0].y);
-				context.lineTo(pol3[1].x,pol3[1].y);
-				context.stroke();
-				context.beginPath();
-				context.moveTo(pol3[0].x,pol3[0].y);
-				context.lineTo(pol3[3].x,pol3[3].y);
-				context.stroke();
-				context.beginPath();
-				context.moveTo(pol3[2].x,pol3[2].y);
-				context.lineTo(pol3[1].x,pol3[1].y);
-				context.stroke();
-				context.beginPath();
-				context.moveTo(pol3[3].x,pol3[3].y);
-				context.lineTo(pol3[2].x,pol3[2].y);
-				context.stroke();*/
-
+				
 				//Game Over Check
 				if(isIntersecting(pol1,pol2)){
 					gameOver(false);
@@ -616,6 +585,7 @@ function playGame(){
 				context.fillRect(width/5,height/5,3*width/5,3*height/5);
 				//context.strokeRect(width/5,height/5,3*width/5,3*height/5);
 				//OK Button
+				context.font="32px Impact";
 				context.strokeStyle="#FFEB3B";
 				context.lineWidth="4";
 				context.strokeRect(retryButton.x-retryButton.width/2,retryButton.y,retryButton.width,retryButton.height);
@@ -624,11 +594,11 @@ function playGame(){
 
 				//Text
 				context.fillStyle="#FFEB3B";
-				context.font="60px Arial";
+				context.font="60px Impact";
 				context.textBaseline="middle";
 				context.textAlign="center";
 				context.fillText("Game Over",width/2,height/4);
-				context.font="24px Arial";
+				context.font="24px Impact";
 				if(rearEnded){
 					context.fillText("You drove too slowly and got rear ended.",width/2,7*height/20)
 				}
@@ -644,6 +614,7 @@ function playGame(){
 					if(isInside(mousePos,retryButton)){
 						canvas.removeEventListener("click",retryClickListener);
 						context.clearRect(0,0,width,height);
+						bac=0;
 						drawMenu(true);
 						//alert("Clicked");
 						return;
@@ -728,6 +699,31 @@ function playGame(){
 			}
 
 
+			
+
+			//BAC 0.08 Vision Failure
+			/*for(var i=0;i<Math.ceil((bac-0.06)/.01);i++){
+				context.fillStyle = "rgba(0,0,0,"+bac*10+")";
+				context.beginPath();
+				var circle={
+					x:Math.random()*width,
+					y:Math.random()*height,
+					rad:width/10
+				}
+				context.arc(circle.x,circle.y,circle.rad,0,Math.PI*2,true);
+				context.closePath();
+				context.fill();
+			}*/
+
+			//BAC 0.15
+			if(bac>=0.14){
+				var grad=context.createRadialGradient((10+height/10),car.yPos,10,(10+height/10),car.yPos,width/(bac*10));
+				grad.addColorStop(0,"transparent");
+				grad.addColorStop(1,"#000000");
+				context.fillStyle=grad;
+				context.fillRect(0,0,width,height);
+			}
+
 			//Dashboard
 			context.strokeStyle="#000000";
 			context.lineWidth="4";
@@ -735,43 +731,40 @@ function playGame(){
 			context.strokeRect(0,11*height/12,width/2,height/12);
 			context.textBaseline="middle";
 			context.textAlign="center";
-			context.font="20px Arial";
+			context.font="20px Impact";
 			mph=Math.floor(((car.speed*fps/500)*3600*200)/(12*5280));
 			distTraveled=(200*car.xPos/(500*12*5280));
 			context.fillText("Speed: "+mph+"mph",width/8,23*height/24);
 			context.fillText("Distance Traveled: "+distTraveled.toFixed(2)+"miles",3*width/8,23*height/24);
-
-
-
 			//Hitbox Debug
 			/*for(var i=0;i<7;i++){
 				rect2={
-					left:rightCars[i]+car.width/8,
-					right:rightCars[i]+car.width-car.width/8,
+					left:rightCars[i]+car.width/16,
+					right:rightCars[i]+car.width-car.width/16,
 					top:height/2+height/30+height/20-car.height/2+(i%2*height/6)+car.height/16,
 					bottom:height/2+height/30+height/20-car.height/2+(i%2*height/6)+car.height-car.height/16
 				}
 				rect3={
-					left:leftCars[i]+car.width/8,
-					right:leftCars[i]+car.width-car.width/8,
+					left:leftCars[i]+car.width/16,
+					right:leftCars[i]+car.width-car.width/16,
 					top:height/2-height/30-height/20-height/6-car.height/2+(i%2*height/6)+car.height/16,
 					bottom:height/2-height/30-height/20-height/6-car.height/2+(i%2*height/6)+car.height-car.height/16
 				}
 				//Rectangle formula by Sunjae Lee.
 				var p1={
-					x:(10+height/10)+(4*car.width/5)/2*Math.cos(car.wheelDeg*Math.PI/180)-(4*car.height/5)/2*Math.sin(car.wheelDeg*Math.PI/180),
-					y:car.yPos+(4*car.width/5)/2*Math.sin(car.wheelDeg*Math.PI/180)+(4*car.height/5)/2*Math.cos(car.wheelDeg*Math.PI/180)
+					x:(10+height/10)+(7*car.width/8)/2*Math.cos(car.wheelDeg*Math.PI/180)-(4*car.height/5)/2*Math.sin(car.wheelDeg*Math.PI/180),
+					y:car.yPos+(7*car.width/8)/2*Math.sin(car.wheelDeg*Math.PI/180)+(4*car.height/5)/2*Math.cos(car.wheelDeg*Math.PI/180)
 				}
 				var p4={
-					x:(10+height/10)+(4*car.width/5)/2*Math.cos(car.wheelDeg*Math.PI/180)+(4*car.height/5)/2*Math.sin(car.wheelDeg*Math.PI/180),
-					y:car.yPos+(4*car.width/5)/2*Math.sin(car.wheelDeg*Math.PI/180)-(4*car.height/5)/2*Math.cos(car.wheelDeg*Math.PI/180)
+					x:(10+height/10)+(7*car.width/8)/2*Math.cos(car.wheelDeg*Math.PI/180)+(4*car.height/5)/2*Math.sin(car.wheelDeg*Math.PI/180),
+					y:car.yPos+(7*car.width/8)/2*Math.sin(car.wheelDeg*Math.PI/180)-(4*car.height/5)/2*Math.cos(car.wheelDeg*Math.PI/180)
 				}
 				var p2={
-					x:(10+height/10)-(4*car.width/5)/2*Math.cos(car.wheelDeg*Math.PI/180)-(4*car.height/5)/2*Math.sin(car.wheelDeg*Math.PI/180),
-					y:car.yPos-(4*car.width/5)/2*Math.sin(car.wheelDeg*Math.PI/180)+(4*car.height/5)/2*Math.cos(car.wheelDeg*Math.PI/180)
+					x:(10+height/10)-(7*car.width/8)/2*Math.cos(car.wheelDeg*Math.PI/180)-(4*car.height/5)/2*Math.sin(car.wheelDeg*Math.PI/180),
+					y:car.yPos-(7*car.width/8)/2*Math.sin(car.wheelDeg*Math.PI/180)+(4*car.height/5)/2*Math.cos(car.wheelDeg*Math.PI/180)
 				}
 				var p3={
-					x:(10+height/10)-(4*car.width/5)/2*Math.cos(car.wheelDeg*Math.PI/180)+(4*car.height/5)/2*Math.sin(car.wheelDeg*Math.PI/180),
+					x:(10+height/10)-(7*car.width/8)/2*Math.cos(car.wheelDeg*Math.PI/180)+(4*car.height/5)/2*Math.sin(car.wheelDeg*Math.PI/180),
 					y:car.yPos-(4*car.width/5)/2*Math.sin(car.wheelDeg*Math.PI/180)-(4*car.height/5)/2*Math.cos(car.wheelDeg*Math.PI/180)
 				}
 
