@@ -271,16 +271,20 @@ function playGame(){
 		//Other Cars
 		//1 Is for bottom/right cars, 2 for top/left cars
 		//Number is distance from player, odd indices are right lane, even indices are left lane
-		var rightCars=[0,0,0,0,0,0,0];
-		var leftCars=[0,0,0,0,0,0,0];
+		var rightCars=[{d:0,lane:0,car:0},{d:0,lane:0,car:0},{d:0,lane:0,car:0},{d:0,lane:0,car:0},{d:0,lane:0,car:0},{d:0,lane:0,car:0},{d:0,lane:0,car:0}];
+		var leftCars=[{d:0,lane:0,car:0},{d:0,lane:0,car:0},{d:0,lane:0,car:0},{d:0,lane:0,car:0},{d:0,lane:0,car:0},{d:0,lane:0,car:0},{d:0,lane:0,car:0}];
 		var minDistR=width/2;
 		var minDistL=width/2;
 
 		for(var i=0;i<7;i++){
-			rightCars[i]=minDistR+Math.ceil(Math.random()*width/3);
-			leftCars[i]=minDistL+Math.ceil(Math.random()*width/3);
-			minDistR=rightCars[i]+width/3;
-			minDistL=leftCars[i]+width/3;
+			rightCars[i].d=minDistR+Math.ceil(Math.random()*width/3);
+			leftCars[i].d=minDistL+Math.ceil(Math.random()*width/3);
+			rightCars[i].lane=Math.floor(Math.random()*2);
+			leftCars[i].lane=Math.floor(Math.random()*2);
+			rightCars[i].color=Math.ceil(Math.random()*7);
+			leftCars[i].color=Math.ceil(Math.random()*7);
+			minDistR=rightCars[i].d+width/3;
+			minDistL=leftCars[i].d+width/3;
 		}
 
 		var otherCarSpeed=maxSpeed/2;
@@ -303,6 +307,9 @@ function playGame(){
 				case 38:
 					//Up
 					car.accel=0.5;
+					if(bac>=0.04){
+						car.accel+=bac*10;
+					}
 					break;
 				case 39:
 					//Right
@@ -365,8 +372,8 @@ function playGame(){
 
 		function moveEverything(){
 			var turnAmt=1/*Math.floor(Math.random()*10)*/;
-			if(bac>=0.06){//BAC 0.06 Erratic Turning
-				turnAmt=Math.ceil(Math.random()*5);
+			if(bac>=0.04){//BAC 0.04 Erratic Turning
+				turnAmt=Math.ceil(Math.random()*bac*100);
 			}
 			car.speed+=car.accel;
 			car.speed-=0.1;
@@ -415,37 +422,43 @@ function playGame(){
 			minDistR-=car.xVel-otherCarSpeed;
 			minDistL-=car.xVel+otherCarSpeed;
 			for(var i=0;i<7;i++){
-				rightCars[i]-=(car.xVel-otherCarSpeed);
-				leftCars[i]-=(car.xVel+otherCarSpeed);
-				if(rightCars[i]<-width/5){
-					rightCars[i]=minDistR+Math.ceil(Math.random()*width/3);
-					minDistR=rightCars[i]+width/3;
+				rightCars[i].d-=(car.xVel-otherCarSpeed);
+				leftCars[i].d-=(car.xVel+otherCarSpeed);
+				if(rightCars[i].d<-width/5){
+					rightCars[i].d=minDistR+Math.ceil(Math.random()*width/3);
+					minDistR=rightCars[i].d+width/3;
+					rightCars[i].lane=Math.floor(Math.random()*2);
+					rightCars[i].color=Math.ceil(Math.random()*7);
 					/*console.log(minDist+";"+width);
 					console.log(rightCars);*/
 				}
-				if(leftCars[i]<-width/5){
-					leftCars[i]=minDistL+Math.ceil(Math.random()*width/3);
-					minDistL=leftCars[i]+width/3;
+				if(leftCars[i].d<-width/5){
+					leftCars[i].d=minDistL+Math.ceil(Math.random()*width/3);
+					leftCars[i].lane=Math.floor(Math.random()*2);
+					leftCars[i].color=Math.ceil(Math.random()*7);
+					minDistL=leftCars[i].d+width/3;
 					/*console.log(minDist+";"+width);
 					console.log(leftCars);*/
 				}
-				if(rightCars[i]>minDistR*2){
-					rightCars[i]=minDistR+Math.ceil(Math.random()*width/3);
-					minDistR=rightCars[i]+width/3;
+				if(rightCars[i].d>minDistR*2){
+					rightCars[i].d=minDistR+Math.ceil(Math.random()*width/3);
+					rightCars[i].lane=Math.floor(Math.random()*2);
+					rightCars[i].color=Math.ceil(Math.random()*7);
+					minDistR=rightCars[i].d+width/3;
 				}
 
 				//Check Collisions
 				rect2={
-					left:rightCars[i]+car.width/16,
-					right:rightCars[i]+car.width-car.width/16,
-					top:height/2+height/30+height/20-car.height/2+(i%2*height/6)+car.height/16,
-					bottom:height/2+height/30+height/20-car.height/2+(i%2*height/6)+car.height-car.height/16
+					left:rightCars[i].d+car.width/16,
+					right:rightCars[i].d+car.width-car.width/16,
+					top:height/2+height/30+height/20-car.height/2+(rightCars[i].lane%2*height/6)+car.height/16,
+					bottom:height/2+height/30+height/20-car.height/2+(rightCars[i].lane%2*height/6)+car.height-car.height/16
 				}
 				rect3={
-					left:leftCars[i]+car.width/16,
-					right:leftCars[i]+car.width-car.width/16,
-					top:height/2-height/30-height/20-height/6-car.height/2+(i%2*height/6)+car.height/16,
-					bottom:height/2-height/30-height/20-height/6-car.height/2+(i%2*height/6)+car.height-car.height/16
+					left:leftCars[i].d+car.width/16,
+					right:leftCars[i].d+car.width-car.width/16,
+					top:height/2-height/30-height/20-height/6-car.height/2+(leftCars[i].lane%2*height/6)+car.height/16,
+					bottom:height/2-height/30-height/20-height/6-car.height/2+(leftCars[i].lane%2*height/6)+car.height-car.height/16
 				}
 				//Rectangle formula by Sunjae Lee.
 				var p1={
@@ -606,7 +619,10 @@ function playGame(){
 					context.fillText("You crashed!",width/2,7*height/20)
 				}
 				context.fillText("You made it "+distTraveled.toFixed(2)+" miles. Click the 'Retry' Button to restart.",width/2,2*height/5);
-				context.fillText("But remember: There are no restarts in life. Never Drink and Drive.",width/2,height/2);
+				
+				if(bac>0.04){
+					context.fillText("But remember: There are no restarts in life. Never Drink and Drive.",width/2,height/2);
+				}
 				canvas.addEventListener("click",retryClickListener,false);
 
 				function retryClickListener(evt){
@@ -690,30 +706,15 @@ function playGame(){
 				//var num2=Math.ceil(Math.random()*7);
 				car1Img=new Image();
 				car2Img=new Image();
-				car1Img.src="images/CarRight"+(i+1)+".png";
-				car2Img.src="images/CarLeft"+(i+1)+".png";
+				car1Img.src="images/CarRight"+(rightCars[i].color)+".png";
+				car2Img.src="images/CarLeft"+(leftCars[i].color)+".png";
 				/*car1Img.src="images/BarBackground.jpg";
 				car2Img.src="images/BarBackground.jpg";*/
-				context.drawImage(car1Img,rightCars[i],height/2+height/30+height/20-car.height/2+(i%2*height/6),car.width,car.height);
-				context.drawImage(car2Img,leftCars[i],height/2-height/30-height/6-height/20-car.height/2+(i%2*height/6),car.width,car.height);
+				context.drawImage(car1Img,rightCars[i].d,height/2+height/30+height/20-car.height/2+(rightCars[i].lane%2*height/6),car.width,car.height);
+				context.drawImage(car2Img,leftCars[i].d,height/2-height/30-height/6-height/20-car.height/2+(leftCars[i].lane%2*height/6),car.width,car.height);
 			}
 
 
-			
-
-			//BAC 0.08 Vision Failure
-			/*for(var i=0;i<Math.ceil((bac-0.06)/.01);i++){
-				context.fillStyle = "rgba(0,0,0,"+bac*10+")";
-				context.beginPath();
-				var circle={
-					x:Math.random()*width,
-					y:Math.random()*height,
-					rad:width/10
-				}
-				context.arc(circle.x,circle.y,circle.rad,0,Math.PI*2,true);
-				context.closePath();
-				context.fill();
-			}*/
 
 			//BAC 0.15
 			if(bac>=0.14){
@@ -739,16 +740,16 @@ function playGame(){
 			//Hitbox Debug
 			/*for(var i=0;i<7;i++){
 				rect2={
-					left:rightCars[i]+car.width/16,
-					right:rightCars[i]+car.width-car.width/16,
-					top:height/2+height/30+height/20-car.height/2+(i%2*height/6)+car.height/16,
-					bottom:height/2+height/30+height/20-car.height/2+(i%2*height/6)+car.height-car.height/16
+					left:rightCars[i].d+car.width/16,
+					right:rightCars[i].d+car.width-car.width/16,
+					top:height/2+height/30+height/20-car.height/2+(rightCars[i].lane%2*height/6)+car.height/16,
+					bottom:height/2+height/30+height/20-car.height/2+(rightCars[i].lane%2*height/6)+car.height-car.height/16
 				}
 				rect3={
-					left:leftCars[i]+car.width/16,
-					right:leftCars[i]+car.width-car.width/16,
-					top:height/2-height/30-height/20-height/6-car.height/2+(i%2*height/6)+car.height/16,
-					bottom:height/2-height/30-height/20-height/6-car.height/2+(i%2*height/6)+car.height-car.height/16
+					left:leftCars[i].d+car.width/16,
+					right:leftCars[i].d+car.width-car.width/16,
+					top:height/2-height/30-height/20-height/6-car.height/2+(leftCars[i].lane%2*height/6)+car.height/16,
+					bottom:height/2-height/30-height/20-height/6-car.height/2+(leftCars[i].lane%2*height/6)+car.height-car.height/16
 				}
 				//Rectangle formula by Sunjae Lee.
 				var p1={
