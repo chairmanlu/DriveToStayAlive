@@ -330,8 +330,9 @@ function playGame(){
 		var interval;
 		var crashed=false;
 		interval=setInterval(function(){
-			moveEverything();
 			drawEverything();
+			moveEverything();
+			
 		},1000/fps);
 
 		function moveEverything(){
@@ -404,16 +405,16 @@ function playGame(){
 					bottom:car.yPos+car.height/2
 				}
 				rect2={
-					left:rightCars[i],
-					right:rightCars[i]+car.width,
-					top:height/2+height/30+height/20-car.height/2+(i%2*height/6),
-					bottom:height/2+height/30+height/20-car.height/2+(i%2*height/6)+car.height
+					left:rightCars[i]+car.width/8,
+					right:rightCars[i]+car.width-car.width/8,
+					top:height/2+height/30+height/20-car.height/2+(i%2*height/6)+car.height/16,
+					bottom:height/2+height/30+height/20-car.height/2+(i%2*height/6)+car.height-car.height/16
 				}
 				rect3={
-					left:leftCars[i],
-					right:leftCars[i]+car.width,
-					top:height/2-height/30-height/20-height/6-car.height/2+(i%2*height/6),
-					bottom:height/2-height/30-height/20-height/6-car.height/2+(i%2*height/6)+car.height
+					left:leftCars[i]+car.width/8,
+					right:leftCars[i]+car.width-car.width/8,
+					top:height/2-height/30-height/20-height/6-car.height/2+(i%2*height/6)+car.height/16,
+					bottom:height/2-height/30-height/20-height/6-car.height/2+(i%2*height/6)+car.height-car.height/16
 				}
 				/*if(isOverlapping(rect1,rect2)){
 					//alert("Crash");
@@ -428,27 +429,84 @@ function playGame(){
 
 				//Rectangle formula by Sunjae Lee.
 				var p1={
-					x:(10+height/10)+(7*car.width/8)/2*Math.cos(car.wheelDeg*Math.PI/180)-(7*car.height/8)/2*Math.sin(car.wheelDeg*Math.PI/180),
-					y:car.yPos+(7*car.width/8)/2*Math.sin(car.wheelDeg*Math.PI/180)+(7*car.height/8)/2*Math.cos(car.wheelDeg*Math.PI/180)
+					x:(10+height/10)+car.width/2+(3*car.width/4)/2*Math.cos(car.wheelDeg*Math.PI/180)-(4*car.height/5)/2*Math.sin(car.wheelDeg*Math.PI/180),
+					y:car.yPos+(3*car.width/4)/2*Math.sin(car.wheelDeg*Math.PI/180)+(4*car.height/5)/2*Math.cos(car.wheelDeg*Math.PI/180)
 				}
 				var p2={
-					x:(10+height/10)+(7*car.width/8)/2*Math.cos(car.wheelDeg*Math.PI/180)+(7*car.height/8)/2*Math.sin(car.wheelDeg*Math.PI/180),
-					y:car.yPos+(7*car.width/8)/2*Math.sin(car.wheelDeg*Math.PI/180)-(7*car.height/8)/2*Math.cos(car.wheelDeg*Math.PI/180)
+					x:(10+height/10)+car.width/2+(3*car.width/4)/2*Math.cos(car.wheelDeg*Math.PI/180)+(4*car.height/5)/2*Math.sin(car.wheelDeg*Math.PI/180),
+					y:car.yPos+(3*car.width/4)/2*Math.sin(car.wheelDeg*Math.PI/180)-(4*car.height/5)/2*Math.cos(car.wheelDeg*Math.PI/180)
 				}
 				var p3={
-					x:(10+height/10)-(7*car.width/8)/2*Math.cos(car.wheelDeg*Math.PI/180)-(7*car.height/8)/2*Math.sin(car.wheelDeg*Math.PI/180),
-					y:car.yPos-(7*car.width/8)/2*Math.sin(car.wheelDeg*Math.PI/180)+(7*car.height/8)/2*Math.cos(car.wheelDeg*Math.PI/180)
+					x:(10+height/10)+car.width/2-(3*car.width/4)/2*Math.cos(car.wheelDeg*Math.PI/180)-(4*car.height/5)/2*Math.sin(car.wheelDeg*Math.PI/180),
+					y:car.yPos-(3*car.width/4)/2*Math.sin(car.wheelDeg*Math.PI/180)+(4*car.height/5)/2*Math.cos(car.wheelDeg*Math.PI/180)
 				}
 				var p4={
-					x:(10+height/10)-(7*car.width/8)/2*Math.cos(car.wheelDeg*Math.PI/180)+(7*car.height/8)/2*Math.sin(car.wheelDeg*Math.PI/180),
-					y:car.yPos-(7*car.width/8)/2*Math.sin(car.wheelDeg*Math.PI/180)-(7*car.height/8)/2*Math.cos(car.wheelDeg*Math.PI/180)
+					x:(10+height/10)+car.width/2-(3*car.width/4)/2*Math.cos(car.wheelDeg*Math.PI/180)+(4*car.height/5)/2*Math.sin(car.wheelDeg*Math.PI/180),
+					y:car.yPos-(3*car.width/4)/2*Math.sin(car.wheelDeg*Math.PI/180)-(4*car.height/5)/2*Math.cos(car.wheelDeg*Math.PI/180)
 				}
 
 				var pol1=[p1,p2,p3,p4];
-				console.log("("+p1.x+","+p1.y+")"+","+"("+p2.x+","+p2.y+")"+","+"("+p3.x+","+p3.y+")"+","+"("+p4.x+","+p4.y+")");
+				//console.log("("+p1.x+","+p1.y+")"+","+"("+p2.x+","+p2.y+")"+","+"("+p3.x+","+p3.y+")"+","+"("+p4.x+","+p4.y+")");
 				var pol2=[{x:rect2.left,y:rect2.top},{x:rect2.right,y:rect2.top},{x:rect2.right,y:rect2.bottom},{x:rect2.left,y:rect2.bottom}];
 				var pol3=[{x:rect3.left,y:rect3.top},{x:rect3.right,y:rect3.top},{x:rect3.right,y:rect3.bottom},{x:rect3.left,y:rect3.bottom}];
 				
+				//Hitbox Debug
+				/*context.strokeStyle="#FFFF00";
+				context.lineWidth="4";
+				context.beginPath();
+				context.moveTo(p1.x,p1.y);
+				context.lineTo(p2.x,p2.y);
+				context.stroke();
+				context.beginPath();
+				context.moveTo(p2.x,p2.y);
+				context.lineTo(p4.x,p4.y);
+				context.stroke();
+				context.beginPath();
+				context.moveTo(p3.x,p3.y);
+				context.lineTo(p4.x,p4.y);
+				context.stroke();
+				context.beginPath();
+				context.moveTo(p3.x,p3.y);
+				context.lineTo(p1.x,p1.y);
+				context.stroke();
+
+				context.strokeStyle="#0000FF";
+				context.beginPath();
+				context.moveTo(pol2[0].x,pol2[0].y);
+				context.lineTo(pol2[1].x,pol2[1].y);
+				context.stroke();
+				context.beginPath();
+				context.moveTo(pol2[0].x,pol2[0].y);
+				context.lineTo(pol2[3].x,pol2[3].y);
+				context.stroke();
+				context.beginPath();
+				context.moveTo(pol2[2].x,pol2[2].y);
+				context.lineTo(pol2[1].x,pol2[1].y);
+				context.stroke();
+				context.beginPath();
+				context.moveTo(pol2[3].x,pol2[3].y);
+				context.lineTo(pol2[2].x,pol2[2].y);
+				context.stroke();
+
+				context.beginPath();
+				context.moveTo(pol3[0].x,pol3[0].y);
+				context.lineTo(pol3[1].x,pol3[1].y);
+				context.stroke();
+				context.beginPath();
+				context.moveTo(pol3[0].x,pol3[0].y);
+				context.lineTo(pol3[3].x,pol3[3].y);
+				context.stroke();
+				context.beginPath();
+				context.moveTo(pol3[2].x,pol3[2].y);
+				context.lineTo(pol3[1].x,pol3[1].y);
+				context.stroke();
+				context.beginPath();
+				context.moveTo(pol3[3].x,pol3[3].y);
+				context.lineTo(pol3[2].x,pol3[2].y);
+				context.stroke();*/
+				
+
+
 				if(isIntersecting(pol1,pol2)){
 					gameOver();
 					return;
@@ -468,9 +526,9 @@ function playGame(){
 					return;
 				}
 			}
-			function isOverlapping(r1,r2){
+			/*function isOverlapping(r1,r2){
 				return !(r2.left > r1.right || r2.right < r1.left || r2.top > r1.bottom ||r2.bottom < r1.top);//Intersection Code from Stackoverflow User Daniel Vassallo https://stackoverflow.com/questions/2752349/fast-rectangle-to-rectangle-intersection
-			}
+			}*/
 
 			/**
 			 * Helper function to determine whether there is an intersection between the two polygons described
@@ -658,6 +716,16 @@ function playGame(){
 				context.drawImage(car2Img,leftCars[i],height/2-height/30-height/6-height/20-car.height/2+(i%2*height/6),car.width,car.height);
 			}
 
+
+			//Dashboard
+			context.strokeStyle="#000000";
+			context.lineWidth="4";
+			context.clearRect(width/2,11*height/12,width/2,height/12);
+			context.strokeRect(width/2,11*height/12,width/2,height/12);
+			context.textBaseline="middle";
+			context.textAlign="center";
+			context.font="20px Impact";
+			context.fillText("Speed: "+Math.ceil(((car.speed*fps/500)*3600*200)/(12*5280)),3*width/5,23*height/24);
 		}
 	}
 }
