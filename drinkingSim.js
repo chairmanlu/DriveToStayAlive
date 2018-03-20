@@ -425,6 +425,8 @@ function playGame(){
 					//alert("Crash");
 					gameOver();
 				}*/
+
+				//Rectangle formula by Sunjae Lee.
 				var p1={
 					x:(10+height/10)+car.width/2*Math.cos(car.wheelDeg*Math.PI/180)-car.height/2*Math.sin(car.wheelDeg*Math.PI/180),
 					y:car.yPos+car.width/2*Math.sin(car.wheelDeg*Math.PI/180)+car.height/2*Math.cos(car.wheelDeg*Math.PI/180)
@@ -441,10 +443,12 @@ function playGame(){
 					x:(10+height/10)-car.width/2*Math.cos(car.wheelDeg*Math.PI/180)+car.height/2*Math.sin(car.wheelDeg*Math.PI/180),
 					y:car.yPos-car.width/2*Math.sin(car.wheelDeg*Math.PI/180)-car.height/2*Math.cos(car.wheelDeg*Math.PI/180)
 				}
+
 				var pol1=[p1,p2,p3,p4];
 				console.log("("+p1.x+","+p1.y+")"+","+"("+p2.x+","+p2.y+")"+","+"("+p3.x+","+p3.y+")"+","+"("+p4.x+","+p4.y+")");
 				var pol2=[{x:rect2.left,y:rect2.top},{x:rect2.right,y:rect2.top},{x:rect2.right,y:rect2.bottom},{x:rect2.left,y:rect2.bottom}];
 				var pol3=[{x:rect3.left,y:rect3.top},{x:rect3.right,y:rect3.top},{x:rect3.right,y:rect3.bottom},{x:rect3.left,y:rect3.bottom}];
+				
 				if(isIntersecting(pol1,pol2)){
 					gameOver();
 					return;
@@ -630,7 +634,8 @@ function playGame(){
 				context.drawImage(bar,0,0,3*width/4,height);
 			}*/
 			var num=1;
-			carImg.src="images/CarRight"+num+".png";
+			//carImg.src="images/CarRight"+num+".png";
+			carImg.src="images/BarBackground.jpg";
 			context.translate(10+height/10, car.yPos);
 			context.rotate(car.wheelDeg*Math.PI/180);
 			context.drawImage(carImg,0,(-car.height/2),car.width,car.height);
@@ -645,8 +650,10 @@ function playGame(){
 				//var num2=Math.ceil(Math.random()*7);
 				car1Img=new Image();
 				car2Img=new Image();
-				car1Img.src="images/CarRight"+(i+1)+".png";
-				car2Img.src="images/CarLeft"+(i+1)+".png";
+				//car1Img.src="images/CarRight"+(i+1)+".png";
+				//car2Img.src="images/CarLeft"+(i+1)+".png";
+				car1Img.src="images/BarBackground.jpg";
+				car2Img.src="images/BarBackground.jpg";
 				context.drawImage(car1Img,rightCars[i],height/2+height/30+height/20-car.height/2+(i%2*height/6),car.width,car.height);
 				context.drawImage(car2Img,leftCars[i],height/2-height/30-height/6-height/20-car.height/2+(i%2*height/6),car.width,car.height);
 			}
