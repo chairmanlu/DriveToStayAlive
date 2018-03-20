@@ -103,6 +103,7 @@ function getMousePos(canvas, evt) {
 function isInside(pos, rect){
 	//alert(pos.x+","+pos.y+"  \n"+(rect.x-rect.width/2)+","+rect.y);
 	return pos.x > (rect.x-rect.width/2) && pos.x < rect.x+rect.width/2 && pos.y < rect.y+rect.height && pos.y > rect.y
+
 }
 
 function playGame(){
@@ -190,6 +191,88 @@ function playGame(){
 					break;
 			}
 		}
+
+
+		//Phone Stuff
+		var num1=Math.floor(Math.random()*13);
+		var num2=Math.floor(Math.random()*13);
+		var operation=Math.floor(Math.random()*3);
+		var operations=['+','-','*'];
+		var userNum="";
+		var totalQuestions=0;
+		var correct=0;
+		var answer=num1+num2;
+		if(operation===1){
+			answer=num1-num2;
+		}
+		if(operation===2){
+			answer=num1*num2;
+		}
+
+		var numPad=[{x:0,y:0,height:0,width:0,text:""},{x:0,y:0,height:0,width:0,text:""},{x:0,y:0,height:0,width:0,text:""},
+					{x:0,y:0,height:0,width:0,text:""},{x:0,y:0,height:0,width:0,text:""},{x:0,y:0,height:0,width:0,text:""},
+					{x:0,y:0,height:0,width:0,text:""},{x:0,y:0,height:0,width:0,text:""},{x:0,y:0,height:0,width:0,text:""},
+					{x:0,y:0,height:0,width:0,text:""},{x:0,y:0,height:0,width:0,text:""},{x:0,y:0,height:0,width:0,text:""}];
+
+		//Initialize NumPad
+		for(var i=0;i<12;i++){
+			var row=Math.floor(i/3);
+			var col=i%3;
+			//console.log(row+","+col);
+			numPad[i].x=width/2+(width/2-height/2)/2+height/10+col*height/10+height/20;
+			numPad[i].y=height/4+row*height/8;
+			numPad[i].width=height/10;
+			numPad[i].height=height/8;
+			numPad[i].text=i+1;
+			if(i===9){
+				numPad[i].text="-";
+			}
+			if(i===10){
+				numPad[i].text=0;
+			}
+			if(i===11){
+				numPad[i].text="Enter";
+			}
+		}
+
+		canvas.addEventListener("click",numPadListener,false);
+
+		function numPadListener(evt){
+			var mousePos=getMousePos(canvas,evt);
+			for(var i=0;i<12;i++){
+				if(isInside(mousePos,numPad[i])){
+					//alert(numPad[i].x+","+numPad[i].width+"|"+mousePos.x);
+					if(numPad[i].text==="Enter"){
+						if(parseInt(userNum)===answer){
+							//alert(correct);
+							correct++;
+						}
+						userNum="";
+						totalQuestions++;
+						num1=Math.floor(Math.random()*13);
+						num2=Math.floor(Math.random()*13);
+						operation=Math.floor(Math.random()*3);
+						answer=num1+num2;
+						if(operation===1){
+							answer=num1-num2;
+						}
+						if(operation===2){
+							answer=num1*num2;
+						}
+					}
+					else{
+						userNum+=numPad[i].text;
+					}
+				}
+			}
+
+		}
+
+		
+
+
+		var deathCount=0;
+
 		var interval;
 		var crashed=false;
 		interval=setInterval(function(){
@@ -197,10 +280,6 @@ function playGame(){
 			drawEverything(false);
 			//moveEverything();
 		},1000/fps);
-
-
-		var deathCount=0;
-
 
 		function moveEverything(){
 			var turnAmt=1/*Math.floor(Math.random()*10)*/;
@@ -462,7 +541,7 @@ function playGame(){
 				clearInterval(interval);
 
 				drawEverything(true);
-
+				canvas.removeEventListener("click",numPadListener);
 				var retryButton={
 					x:width/2,
 					y: 5*height/8,
@@ -470,6 +549,7 @@ function playGame(){
 					height: height/10,
 					text: "Retry"
 				}
+				context.textAlign="center";
 				//console.log("filled");
 				context.fillStyle="#215EF7";
 				context.fillRect(width/5,height/5,3*width/5,3*height/5);
@@ -494,7 +574,8 @@ function playGame(){
 				else{
 					context.fillText("You crashed!",width/2,7*height/20)
 				}
-				context.fillText("You made it "+distTraveled.toFixed(2)+" miles. Click the 'Retry' Button to restart.",width/2,2*height/5);
+				context.fillText("You made it "+distTraveled.toFixed(2)+" miles. Click the 'Retry' Button to restart.",width/2,9*height/20);
+				context.fillText("Questions Answered: "+correct+"/"+totalQuestions,width/2,2*height/5);
 				context.fillText("But remember: There are no restarts in life. Never Text and Drive.",width/2,height/2);
 				canvas.addEventListener("click",retryClickListener,false);
 
@@ -603,7 +684,7 @@ function playGame(){
 
 
 			//Hitbox Debug
-			for(var i=0;i<7;i++){
+			/*for(var i=0;i<7;i++){
 				rect2={
 					left:rightCars[i]+car.width/16,
 					right:rightCars[i]+car.width-car.width/16,
@@ -693,7 +774,7 @@ function playGame(){
 				context.moveTo(pol3[3].x,pol3[3].y);
 				context.lineTo(pol3[2].x,pol3[2].y);
 				context.stroke();
-			}
+			}*/
 
 
 
@@ -702,6 +783,44 @@ function playGame(){
 			phoneImg=new Image();
 			phoneImg.src="images/Phone.png";
 			context.drawImage(phoneImg,width/2+(width/2-height/2)/2,0,height/2,height);
+			//Math Question
+			context.fillStyle="#000000";
+			context.textAlign="center";
+			context.font="32px Arial";
+			context.fillText("What is "+num1+" "+operations[operation]+" "+num2+"?",3*width/4,height/6);
+
+			//Numpad
+			context.strokeStyle="#000000";
+			context.lineWidth="2";
+			//context.strokeRect(3*width/4-3*height/20,height/4,3*height/10,height/2)
+			/*//Grid Lines
+			//Column Lines
+			for(var i=0;i<2;i++){
+				context.beginPath();
+				context.moveTo((width/2+(width/2-height/2)/2)+(i+2)*height/10,height/4);
+				context.lineTo((width/2+(width/2-height/2)/2)+(i+2)*height/10,3*height/4);
+				context.stroke();
+			}
+			//Row Lines
+			for(var i=0;i<3;i++){
+				context.beginPath();
+				context.moveTo((width/2+(width/2-height/2)/2)+height/10,(i+3)*height/8);
+				context.lineTo((width/2+(width/2-height/2)/2)+4*height/10,(i+3)*height/8);
+				context.stroke();
+			}*/
+			//Numbers
+			context.strokeStyle="#000000";
+			context.fillStyle="#000000";
+			context.textAlign="center";
+			context.font="24px Arial";
+			for(var i=0;i<numPad.length;i++){
+				context.strokeRect(numPad[i].x-numPad[i].width/2,numPad[i].y,numPad[i].width,numPad[i].height);
+				context.fillText(numPad[i].text,numPad[i].x+numPad[i].width/2-numPad[i].width/2,numPad[i].y+numPad[i].height/2);
+			}
+
+			context.strokeRect(width/2+(width/2-height/2)/2+height/10,13*height/16,3*height/10,height/16);
+			context.textAlign="end";
+			context.fillText(userNum,width/2+(width/2-height/2)/2+4*height/10,13*height/16+height/32);
 		}
 	}
 }
