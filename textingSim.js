@@ -19,17 +19,17 @@ var height=canvas.height;
 var context=canvas.getContext("2d");
 
 function startGame(){
-	context.fillStyle="#424242";
+	context.fillStyle="#215EF7";
 	context.fillRect(0,0,width,height);
-	var bar=new Image();
-	bar.onload = function(){
-		context.drawImage(bar,0,0,3*width/4,height);
+	var textBG=new Image();
+	textBG.onload = function(){
+		context.drawImage(textBG,0,0,3*width/4,height);
 	}
-	bar.src="images/BarBackground.jpg";
-	context.fillStyle="#FFEB3B";
-	context.font="32px Impact";
+	textBG.src="images/TextingBackground.jpg";
+	context.fillStyle="#FFFFFF";
+	context.font="32px Arial";
 	context.textAlign="center";
-	context.fillText("Drinking and Driving\nSimulator",7*width/8,height/8);
+	context.fillText("Texting and Driving\nSimulator",7*width/8,height/8);
 
 	var startButton={
 		x:7*width/8,
@@ -56,7 +56,7 @@ function startGame(){
 	}
 
 	//Start Button
-	context.strokeStyle="#FFEB3B";
+	context.strokeStyle="#FFFFFF";
 	context.textBaseline="middle";
 	context.lineWidth="4";
 	context.strokeRect(startButton.x-startButton.width/2,startButton.y,startButton.width,startButton.height);
@@ -106,148 +106,7 @@ function isInside(pos, rect){
 }
 
 function playGame(){
-	var bac=0.0;
-	drawMenu(true);
-	
-	function drawMenu(drawBar){
-		if(drawBar){
-			context.clearRect(0, 0, canvas.width, canvas.height);
-			var bar=new Image();
-			var barLoaded=false;
-			bar.onload = function(){
-				context.drawImage(bar,0,0,3*width/4,height);
-				barLoaded=true;
-			}
-			bar.src="images/BarBackground.jpg";
-			canvas.addEventListener("click",gameClickListener,false);
-		}
-		else{
-			context.clearRect(3*width/4, 0, canvas.width/4, canvas.height);
-		}
-		
-		context.fillStyle="#424242";
-		context.fillRect(3*width/4,0,width/4,height);
-
-		context.font="48px Impact";
-		context.textAlign="center";
-		context.textBaseline="middle";
-		context.fillStyle="#FFEB3B";
-		context.fillText("BAC: "+bac.toFixed(2),7*width/8,height/5);
-
-		context.font="24px Impact";
-		var drinkButton={
-			x:7*width/8,
-			y: 5*height/8,
-			width: width/10,
-			height: height/10,
-			text: "Take a Shot"
-		}
-
-		var driveButton={
-			x:7*width/8,
-			y: 3*height/4,
-			width: width/10,
-			height: height/10,
-			text: "Drive"
-		}
-
-		//Drink Button
-		context.strokeStyle="#FFEB3B";
-		context.lineWidth="4";
-		context.strokeRect(drinkButton.x-drinkButton.width/2,drinkButton.y,drinkButton.width,drinkButton.height);
-		context.fillText(drinkButton.text,drinkButton.x,drinkButton.y+drinkButton.height/2);
-
-		//Drive Button
-		context.strokeStyle="#FFEB3B";
-		context.textBaseline="middle";
-		context.lineWidth="4";
-		context.strokeRect(driveButton.x-driveButton.width/2,driveButton.y,driveButton.width,driveButton.height);
-		context.fillText(driveButton.text,driveButton.x,driveButton.y+driveButton.height/2);
-		//alert("added");
-
-		function gameClickListener(evt){
-			var mousePos=getMousePos(canvas,evt);
-			if(isInside(mousePos,drinkButton)){
-				bac+=0.02;
-				//alert("removed");
-				drawMenu(false);
-				if(bac===0.02){
-					canvas.removeEventListener("click",gameClickListener);
-					drawAlert(0.02);
-				}
-				else if(bac===0.06){
-					canvas.removeEventListener("click",gameClickListener);
-					drawAlert(0.06);
-				}
-				else if(bac===0.08){
-					canvas.removeEventListener("click",gameClickListener);
-					drawAlert(0.08);
-				}
-				else if(bac===0.1){
-					canvas.removeEventListener("click",gameClickListener);
-					drawAlert(0.1);
-				}
-				else if(bac===0.14){
-					canvas.removeEventListener("click",gameClickListener);
-					drawAlert(0.14);
-				}
-			}
-			else if(isInside(mousePos,driveButton)){
-				canvas.removeEventListener("click",gameClickListener);
-				drive();
-				return;
-			}
-		}
-
-		function drawAlert(n){
-			canvas.removeEventListener("click",gameClickListener);
-			switch(n){
-				case 0.02:
-					break;
-				case 0.06:
-					break;
-				case 0.08:
-					break;
-				case 0.1:
-					break;
-				case 0.14:
-					break;
-				default:
-					alert("Error: Unhandled Case: "+n);
-			}
-
-			var okButton={
-				x:width/2,
-				y: 5*height/8,
-				width: width/10,
-				height: height/10,
-				text: "OK"
-			}
-
-			context.fillStyle="#424242";
-			context.fillRect(width/5,height/5,3*width/5,3*height/5);
-			context.strokeRect(width/5,height/5,3*width/5,3*height/5);
-
-			//OK Button
-			context.strokeStyle="#FFEB3B";
-			context.lineWidth="4";
-			context.strokeRect(okButton.x-okButton.width/2,okButton.y,okButton.width,okButton.height);
-			context.fillStyle="#FFEB3B";
-			context.fillText(okButton.text,okButton.x,okButton.y+okButton.height/2);
-
-			canvas.addEventListener("click",okClickListener,false);
-
-			function okClickListener(evt){
-				var mousePos=getMousePos(canvas,evt);
-				if(isInside(mousePos,okButton)){
-					canvas.removeEventListener("click",okClickListener);
-					context.clearRect(0,0,width,height);
-					drawMenu(true);
-				}
-			}
-		}
-	}
-
+	drive();
 	function drive(){
 		//alert("drive called");
 		context.clearRect(0,0,width,height);
@@ -465,7 +324,7 @@ function playGame(){
 				var pol3=[{x:rect3.left,y:rect3.top},{x:rect3.right,y:rect3.top},{x:rect3.right,y:rect3.bottom},{x:rect3.left,y:rect3.bottom}];
 				
 				//Hitbox Debug
-				context.strokeStyle="#FFFF00";
+				/*context.strokeStyle="#FFFF00";
 				context.lineWidth="4";
 				context.beginPath();
 				context.moveTo(p1.x,p1.y);
@@ -517,7 +376,7 @@ function playGame(){
 				context.beginPath();
 				context.moveTo(pol3[3].x,pol3[3].y);
 				context.lineTo(pol3[2].x,pol3[2].y);
-				context.stroke();
+				context.stroke();*/
 				
 
 
@@ -618,12 +477,6 @@ function playGame(){
 				}
 			}
 
-
-
-
-
-
-
 			function gameOver(rearEnded){
 				crashed=true;
 				clearInterval(interval);
@@ -636,30 +489,28 @@ function playGame(){
 					text: "Retry"
 				}
 				//console.log("filled");
-				context.fillStyle="#424242";
+				context.fillStyle="#215EF7";
 				context.fillRect(width/5,height/5,3*width/5,3*height/5);
 				//context.strokeRect(width/5,height/5,3*width/5,3*height/5);
 				//OK Button
-				context.strokeStyle="#FFEB3B";
+				context.strokeStyle="#FFFFFF";
 				context.lineWidth="4";
 				context.strokeRect(retryButton.x-retryButton.width/2,retryButton.y,retryButton.width,retryButton.height);
-				context.fillStyle="#FFEB3B";
+				context.fillStyle="#FFFFFF";
 				context.fillText(retryButton.text,retryButton.x,retryButton.y+retryButton.height/2);
 
 				//Text
-				context.fillStyle="#FFEB3B";
-				context.font="60px Impact";
+				context.fillStyle="#FFFFFF";
+				context.font="60px Arial";
 				context.textBaseline="middle";
 				context.textAlign="center";
 				context.fillText("Game Over",width/2,height/4);
-				context.font="24px Impact";
+				context.font="24px Arial";
 				if(rearEnded){
 					context.fillText("You drove too slowly and got rear ended.",width/2,7*height/20)
 				}
 				context.fillText("You made it "+distTraveled.toFixed(2)+" miles. Click the 'Retry' Button to restart.",width/2,2*height/5);
-				if(bac>0){
-					context.fillText("But remember: There are no restarts in life. Never Drink and Drive.",width/2,height/2);
-				}
+				context.fillText("But remember: There are no restarts in life. Never Text and Drive.",width/2,height/2);
 				canvas.addEventListener("click",retryClickListener,false);
 
 				function retryClickListener(evt){
@@ -667,7 +518,8 @@ function playGame(){
 					if(isInside(mousePos,retryButton)){
 						canvas.removeEventListener("click",retryClickListener);
 						context.clearRect(0,0,width,height);
-						drawMenu(true);
+						playGame();
+						//alert("Clicked");
 						return;
 					}
 				}
@@ -753,15 +605,15 @@ function playGame(){
 			//Dashboard
 			context.strokeStyle="#000000";
 			context.lineWidth="4";
-			context.clearRect(width/2,11*height/12,width/2,height/12);
-			context.strokeRect(width/2,11*height/12,width/2,height/12);
+			context.clearRect(0,11*height/12,width/2,height/12);
+			context.strokeRect(0,11*height/12,width/2,height/12);
 			context.textBaseline="middle";
 			context.textAlign="center";
-			context.font="20px Impact";
+			context.font="20px Arial";
 			mph=Math.floor(((car.speed*fps/500)*3600*200)/(12*5280));
 			distTraveled=(200*car.xPos/(500*12*5280));
-			context.fillText("Speed: "+mph+"mph",5*width/8,23*height/24);
-			context.fillText("Distance Traveled: "+distTraveled.toFixed(2)+"miles",7*width/8,23*height/24);
+			context.fillText("Speed: "+mph+"mph",width/8,23*height/24);
+			context.fillText("Distance Traveled: "+distTraveled.toFixed(2)+"miles",3*width/8,23*height/24);
 		}
 	}
 }
