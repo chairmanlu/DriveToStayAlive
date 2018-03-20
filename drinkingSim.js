@@ -193,7 +193,9 @@ function playGame(){
 				}
 			}
 			else if(isInside(mousePos,driveButton)){
+				canvas.removeEventListener("click",gameClickListener);
 				drive();
+				return;
 			}
 		}
 
@@ -204,7 +206,7 @@ function playGame(){
 					break;
 				case 0.06:
 					break;
-				case 0.06:
+				case 0.08:
 					break;
 				case 0.1:
 					break;
@@ -247,6 +249,7 @@ function playGame(){
 	}
 
 	function drive(){
+		alert("drive called");
 		context.clearRect(0,0,width,height);
 		var fps=60;
 
@@ -265,6 +268,22 @@ function playGame(){
 		var turningRight=false;
 		var turningLeft=false;
 
+		//Other Cars
+		//1 Is for bottom/right cars, 2 for top/left cars
+		//Number is distance from player, odd indices are right lane, even indices are left lane
+		var rightCars=[0,0,0,0,0,0,0];
+		var leftCars=[0,0,0,0,0,0,0];
+		var minDistR=width/2;
+		var minDistL=width/2;
+		for(var i=0;i<7;i++){
+			rightCars[i]=minDistR+Math.ceil(Math.random()*width/3);
+			leftCars[i]=minDistL+Math.ceil(Math.random()*width/3);
+			minDistR=rightCars[i]+width/3;
+			minDistL=leftCars[i]+width/3;
+		}
+
+		var otherCarSpeed=15;
+
 		window.onkeydown = function(e){
 			var code=e.keyCode?e.keyCode:e.which;
 			switch(code){
@@ -282,10 +301,7 @@ function playGame(){
 					break;
 				case 40:
 					//Down
-					car.accel=-1;
-					if(car.accel<-2){
-						car.accel=-2;
-					}
+					car.accel=-0.8;
 					break;
 			}
 		}
@@ -311,8 +327,9 @@ function playGame(){
 					break;
 			}
 		}
-
-		setInterval(function(){
+		var interval;
+		var crashed=false;
+		interval=setInterval(function(){
 			moveEverything();
 			drawEverything();
 		},1000/fps);
@@ -325,8 +342,8 @@ function playGame(){
 				car.speed=0;
 				car.accel=0;
 			}
-			if(car.speed>20){
-				car.speed=20;
+			if(car.speed>25){
+				car.speed=25;
 			}
 			if(turningLeft&&car.speed>0){
 				car.wheelDeg-=turnAmt;
@@ -351,13 +368,109 @@ function playGame(){
 			}
 			car.xVel=car.speed*Math.cos(car.wheelDeg*Math.PI/180);
 			car.yVel=car.speed*Math.sin(car.wheelDeg*Math.PI/180);
-			console.log(car.xVel+","+car.yVel);
-			console.log(car.wheelDeg);
+			//console.log(car.xVel+","+car.yVel);
+			//console.log(car.wheelDeg);
 			car.xPos+=car.xVel;
 			car.yPos+=car.yVel;
-		}
+			/*console.log(minDist+";"+width);
+			console.log(rightCars);*/
+			minDistR-=car.xVel-otherCarSpeed;
+			minDistL-=car.xVel+otherCarSpeed;
+			for(var i=0;i<7;i++){
+				rightCars[i]-=car.xVel-otherCarSpeed;
+				leftCars[i]-=car.xVel+otherCarSpeed;
+				if(rightCars[i]<-width/5){
+					rightCars[i]=minDistR+Math.ceil(Math.random()*width/3);
+					minDistR=rightCars[i]+width/3;
+					/*console.log(minDist+";"+width);
+					console.log(rightCars);*/
+				}
+				if(leftCars[i]<-width/5){
+					leftCars[i]=minDistL+Math.ceil(Math.random()*width/3);
+					minDistL=leftCars[i]+width/3;
+					/*console.log(minDist+";"+width);
+					console.log(leftCars);*/
+				}
+				if(rightCars[i]>minDistR*2){
+					rightCars[i]=minDistR+Math.ceil(Math.random()*width/3);
+					minDistR=rightCars[i]+width/3;
+				}
+
+				//Check Collisions
+				rect1={
+					left:10+height/10-car.width/2,
+					right:10+height/10+car.width/2,
+					top:car.yPos-car.height/2,
+					bottom:car.yPos+car.height/2
+				}
+				rect2={
+					left:rightCars[i],
+					right:rightCars[i]+car.width,
+					top:height/2+height/30+height/20-car.height/2+(i%2*height/6),
+					bottom:height/2+height/30+height/20-car.height/2+(i%2*height/6)+car.height
+				}
+				rect3={
+					left:leftCars[i],
+					right:leftCars[i]+car.width,
+					top:height/2-height/30-height/20-height/6-car.height/2+(i%2*height/6),
+					bottom:height/2-height/30-height/20-height/6-car.height/2+(i%2*height/6)+car.height
+				}
+				if(isOverlapping(rect1,rect2)){
+					//alert("Crash");
+					gameOver();
+					/*console.log(rect1);
+					console.log(rect2);*/
+				}
+				if(isOverlapping(rect1,rect3)){
+					//alert("Crash");
+					gameOver();
+				}
+			}
+			function isOverlapping(r1,r2){
+				return !(r2.left > r1.right || r2.right < r1.left || r2.top > r1.bottom ||r2.bottom < r1.top);//Intersection Code from Stackoverflow User Daniel Vassallo https://stackoverflow.com/questions/2752349/fast-rectangle-to-rectangle-intersection
+			}
+
+			function gameOver(){
+				crashed=true;
+				clearInterval(interval);
+
+				var okButton={
+					x:width/2,
+					y: 5*height/8,
+					width: width/10,
+					height: height/10,
+					text: "OK"
+				}
+				//console.log("filled");
+				context.fillStyle="#424242";
+				context.fillRect(width/5,height/5,3*width/5,3*height/5);
+				//context.strokeRect(width/5,height/5,3*width/5,3*height/5);
+				//OK Button
+				context.strokeStyle="#FFEB3B";
+				context.lineWidth="4";
+				context.strokeRect(okButton.x-okButton.width/2,okButton.y,okButton.width,okButton.height);
+				context.fillStyle="#FFEB3B";
+				context.fillText(okButton.text,okButton.x,okButton.y+okButton.height/2);
+
+				canvas.addEventListener("click",okClickListener,false);
+
+				function okClickListener(evt){
+					var mousePos=getMousePos(canvas,evt);
+					if(isInside(mousePos,okButton)){
+						canvas.removeEventListener("click",okClickListener);
+						context.clearRect(0,0,width,height);
+						drawMenu(true);
+						return;
+					}
+				}
+			}
+	}
 
 		function drawEverything(){
+			console.log("drawn");
+			if(crashed){
+				return;
+			}
 			context.clearRect(0,0,width,height);
 			context.fillStyle="#063B00";
 			context.fillRect(0,0,width,height);
@@ -401,6 +514,19 @@ function playGame(){
 			//context.fillRect(-car.width/2,-car.height/2,car.width,car.height);
 			context.rotate(-1*car.wheelDeg*Math.PI/180);
 			context.translate(-(10+height/10), -car.yPos);
+			//console.log(car.xPos);
+			//Other Cars
+			for(var i=0;i<7;i++){
+				//var num1=Math.ceil(Math.random()*7);
+				//var num2=Math.ceil(Math.random()*7);
+				car1Img=new Image();
+				car2Img=new Image();
+				car1Img.src="images/CarRight"+(i+1)+".png";
+				car2Img.src="images/CarLeft"+(i+1)+".png";
+				context.drawImage(car1Img,rightCars[i],height/2+height/30+height/20-car.height/2+(i%2*height/6),car.width,car.height);
+				context.drawImage(car2Img,leftCars[i],height/2-height/30-height/6-height/20-car.height/2+(i%2*height/6),car.width,car.height);
+			}
+
 		}
 	}
 }
