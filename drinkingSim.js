@@ -335,7 +335,7 @@ function playGame(){
 		var crashed=false;
 		interval=setInterval(function(){
 			moveEverything();
-			drawEverything();
+			drawEverything(false);
 			//moveEverything();
 		},1000/fps);
 
@@ -465,7 +465,7 @@ function playGame(){
 				var pol3=[{x:rect3.left,y:rect3.top},{x:rect3.right,y:rect3.top},{x:rect3.right,y:rect3.bottom},{x:rect3.left,y:rect3.bottom}];
 				
 				//Hitbox Debug
-				context.strokeStyle="#FFFF00";
+				/*context.strokeStyle="#FFFF00";
 				context.lineWidth="4";
 				context.beginPath();
 				context.moveTo(p1.x,p1.y);
@@ -517,7 +517,7 @@ function playGame(){
 				context.beginPath();
 				context.moveTo(pol3[3].x,pol3[3].y);
 				context.lineTo(pol3[2].x,pol3[2].y);
-				context.stroke();
+				context.stroke();*/
 				
 
 
@@ -627,7 +627,7 @@ function playGame(){
 			function gameOver(rearEnded){
 				crashed=true;
 				clearInterval(interval);
-
+				drawEverything(true);
 				var retryButton={
 					x:width/2,
 					y: 5*height/8,
@@ -656,6 +656,9 @@ function playGame(){
 				if(rearEnded){
 					context.fillText("You drove too slowly and got rear ended.",width/2,7*height/20)
 				}
+				else{
+					context.fillText("You crashed!",width/2,7*height/20)
+				}
 				context.fillText("You made it "+distTraveled.toFixed(2)+" miles. Click the 'Retry' Button to restart.",width/2,2*height/5);
 				if(bac>0){
 					context.fillText("But remember: There are no restarts in life. Never Drink and Drive.",width/2,height/2);
@@ -674,9 +677,9 @@ function playGame(){
 			}
 		}
 
-		function drawEverything(){
+		function drawEverything(ignore){
 			//console.log("drawn");
-			if(crashed){
+			if(crashed&&!ignore){
 				return;
 			}
 			context.clearRect(0,0,width,height);

@@ -194,7 +194,7 @@ function playGame(){
 		var crashed=false;
 		interval=setInterval(function(){
 			moveEverything();
-			drawEverything();
+			drawEverything(false);
 			//moveEverything();
 		},1000/fps);
 
@@ -251,8 +251,8 @@ function playGame(){
 			minDistR-=car.xVel-otherCarSpeed;
 			minDistL-=car.xVel+otherCarSpeed;
 			for(var i=0;i<7;i++){
-				rightCars[i]-=car.xVel-otherCarSpeed;
-				leftCars[i]-=car.xVel+otherCarSpeed;
+				rightCars[i]-=(car.xVel-otherCarSpeed);
+				leftCars[i]-=(car.xVel+otherCarSpeed);
 				if(rightCars[i]<-width/5){
 					rightCars[i]=minDistR+Math.ceil(Math.random()*width/3);
 					minDistR=rightCars[i]+width/3;
@@ -278,28 +278,17 @@ function playGame(){
 					bottom:car.yPos+car.height/2
 				}
 				rect2={
-					left:rightCars[i]+car.width/8,
-					right:rightCars[i]+car.width-car.width/8,
-					top:height/2+height/30+height/20-car.height/2+(i%2*height/6)+car.height/16,
-					bottom:height/2+height/30+height/20-car.height/2+(i%2*height/6)+car.height-car.height/16
+					left:rightCars[i],
+					right:rightCars[i]+car.width,
+					top:height/2+height/30+height/20-car.height/2+(i%2*height/6),
+					bottom:height/2+height/30+height/20-car.height/2+(i%2*height/6)+car.height
 				}
 				rect3={
-					left:leftCars[i]+car.width/8,
-					right:leftCars[i]+car.width-car.width/8,
-					top:height/2-height/30-height/20-height/6-car.height/2+(i%2*height/6)+car.height/16,
-					bottom:height/2-height/30-height/20-height/6-car.height/2+(i%2*height/6)+car.height-car.height/16
+					left:leftCars[i],
+					right:leftCars[i]+car.width,
+					top:height/2-height/30-height/20-height/6-car.height/2+(i%2*height/6),
+					bottom:height/2-height/30-height/20-height/6-car.height/2+(i%2*height/6)+car.height
 				}
-				/*if(isOverlapping(rect1,rect2)){
-					//alert("Crash");
-					gameOver();
-					console.log(rect1);
-					console.log(rect2);
-				}
-				if(isOverlapping(rect1,rect3)){
-					//alert("Crash");
-					gameOver();
-				}*/
-
 				//Rectangle formula by Sunjae Lee.
 				var p1={
 					x:(10+height/10)+car.width/2+(3*car.width/4)/2*Math.cos(car.wheelDeg*Math.PI/180)-(4*car.height/5)/2*Math.sin(car.wheelDeg*Math.PI/180),
@@ -376,11 +365,11 @@ function playGame(){
 				context.beginPath();
 				context.moveTo(pol3[3].x,pol3[3].y);
 				context.lineTo(pol3[2].x,pol3[2].y);
-				context.stroke();*/
-				
+				context.stroke();
+				*/
 
 
-				if(isIntersecting(pol1,pol2)){
+				/*if(isIntersecting(pol1,pol2)){
 					gameOver(false);
 					return;
 				}
@@ -399,10 +388,10 @@ function playGame(){
 					return;
 				}
 
-				if(deathCount>300){
+				if(deathCount>fps*5){
 					gameOver(true);
 					return;
-				}
+				}*/
 			}
 			/*function isOverlapping(r1,r2){
 				return !(r2.left > r1.right || r2.right < r1.left || r2.top > r1.bottom ||r2.bottom < r1.top);//Intersection Code from Stackoverflow User Daniel Vassallo https://stackoverflow.com/questions/2752349/fast-rectangle-to-rectangle-intersection
@@ -481,6 +470,8 @@ function playGame(){
 				crashed=true;
 				clearInterval(interval);
 
+				drawEverything(true);
+
 				var retryButton={
 					x:width/2,
 					y: 5*height/8,
@@ -509,6 +500,9 @@ function playGame(){
 				if(rearEnded){
 					context.fillText("You drove too slowly and got rear ended.",width/2,7*height/20)
 				}
+				else{
+					context.fillText("You crashed!",width/2,7*height/20)
+				}
 				context.fillText("You made it "+distTraveled.toFixed(2)+" miles. Click the 'Retry' Button to restart.",width/2,2*height/5);
 				context.fillText("But remember: There are no restarts in life. Never Text and Drive.",width/2,height/2);
 				canvas.addEventListener("click",retryClickListener,false);
@@ -526,9 +520,9 @@ function playGame(){
 			}
 		}
 
-		function drawEverything(){
+		function drawEverything(ignore){
 			//console.log("drawn");
-			if(crashed){
+			if(crashed&&!ignore){
 				return;
 			}
 			context.clearRect(0,0,width,height);
@@ -614,6 +608,115 @@ function playGame(){
 			distTraveled=(200*car.xPos/(500*12*5280));
 			context.fillText("Speed: "+mph+"mph",width/8,23*height/24);
 			context.fillText("Distance Traveled: "+distTraveled.toFixed(2)+"miles",3*width/8,23*height/24);
+
+
+
+			//Hitbox Debug
+			for(var i=0;i<7;i++){
+				rect1={
+					left:10+height/10-car.width/2,
+					right:10+height/10+car.width/2,
+					top:car.yPos-car.height/2,
+					bottom:car.yPos+car.height/2
+				}
+				rect2={
+					left:rightCars[i],
+					right:rightCars[i]+car.width,
+					top:height/2+height/30+height/20-car.height/2+(i%2*height/6),
+					bottom:height/2+height/30+height/20-car.height/2+(i%2*height/6)+car.height
+				}
+				rect3={
+					left:leftCars[i],
+					right:leftCars[i]+car.width,
+					top:height/2-height/30-height/20-height/6-car.height/2+(i%2*height/6),
+					bottom:height/2-height/30-height/20-height/6-car.height/2+(i%2*height/6)+car.height
+				}
+				//Rectangle formula by Sunjae Lee.
+				var p1={
+					x:(10+height/10)+car.width/2+(3*car.width/4)/2*Math.cos(car.wheelDeg*Math.PI/180)-(4*car.height/5)/2*Math.sin(car.wheelDeg*Math.PI/180),
+					y:car.yPos+(3*car.width/4)/2*Math.sin(car.wheelDeg*Math.PI/180)+(4*car.height/5)/2*Math.cos(car.wheelDeg*Math.PI/180)
+				}
+				var p2={
+					x:(10+height/10)+car.width/2+(3*car.width/4)/2*Math.cos(car.wheelDeg*Math.PI/180)+(4*car.height/5)/2*Math.sin(car.wheelDeg*Math.PI/180),
+					y:car.yPos+(3*car.width/4)/2*Math.sin(car.wheelDeg*Math.PI/180)-(4*car.height/5)/2*Math.cos(car.wheelDeg*Math.PI/180)
+				}
+				var p3={
+					x:(10+height/10)+car.width/2-(3*car.width/4)/2*Math.cos(car.wheelDeg*Math.PI/180)-(4*car.height/5)/2*Math.sin(car.wheelDeg*Math.PI/180),
+					y:car.yPos-(3*car.width/4)/2*Math.sin(car.wheelDeg*Math.PI/180)+(4*car.height/5)/2*Math.cos(car.wheelDeg*Math.PI/180)
+				}
+				var p4={
+					x:(10+height/10)+car.width/2-(3*car.width/4)/2*Math.cos(car.wheelDeg*Math.PI/180)+(4*car.height/5)/2*Math.sin(car.wheelDeg*Math.PI/180),
+					y:car.yPos-(3*car.width/4)/2*Math.sin(car.wheelDeg*Math.PI/180)-(4*car.height/5)/2*Math.cos(car.wheelDeg*Math.PI/180)
+				}
+
+				var pol1=[p1,p2,p3,p4];
+				//console.log("("+p1.x+","+p1.y+")"+","+"("+p2.x+","+p2.y+")"+","+"("+p3.x+","+p3.y+")"+","+"("+p4.x+","+p4.y+")");
+				var pol2=[{x:rect2.left,y:rect2.top},{x:rect2.right,y:rect2.top},{x:rect2.right,y:rect2.bottom},{x:rect2.left,y:rect2.bottom}];
+				var pol3=[{x:rect3.left,y:rect3.top},{x:rect3.right,y:rect3.top},{x:rect3.right,y:rect3.bottom},{x:rect3.left,y:rect3.bottom}];
+				console.log(pol2[0].x+","+pol2[0].y);
+				//Hitbox Debug
+				context.strokeStyle="#FFFF00";
+				context.lineWidth="4";
+				context.beginPath();
+				context.moveTo(p1.x,p1.y);
+				context.lineTo(p2.x,p2.y);
+				context.stroke();
+				context.beginPath();
+				context.moveTo(p2.x,p2.y);
+				context.lineTo(p4.x,p4.y);
+				context.stroke();
+				context.beginPath();
+				context.moveTo(p3.x,p3.y);
+				context.lineTo(p4.x,p4.y);
+				context.stroke();
+				context.beginPath();
+				context.moveTo(p3.x,p3.y);
+				context.lineTo(p1.x,p1.y);
+				context.stroke();
+
+				context.strokeStyle="#FF0000";
+				context.beginPath();
+				context.moveTo(pol2[0].x,pol2[0].y);
+				context.lineTo(pol2[1].x,pol2[1].y);
+				context.stroke();
+				context.beginPath();
+				context.moveTo(pol2[0].x,pol2[0].y);
+				context.lineTo(pol2[3].x,pol2[3].y);
+				context.stroke();
+				context.beginPath();
+				context.moveTo(pol2[2].x,pol2[2].y);
+				context.lineTo(pol2[1].x,pol2[1].y);
+				context.stroke();
+				context.beginPath();
+				context.moveTo(pol2[3].x,pol2[3].y);
+				context.lineTo(pol2[2].x,pol2[2].y);
+				context.stroke();
+
+				context.beginPath();
+				context.moveTo(pol3[0].x,pol3[0].y);
+				context.lineTo(pol3[1].x,pol3[1].y);
+				context.stroke();
+				context.beginPath();
+				context.moveTo(pol3[0].x,pol3[0].y);
+				context.lineTo(pol3[3].x,pol3[3].y);
+				context.stroke();
+				context.beginPath();
+				context.moveTo(pol3[2].x,pol3[2].y);
+				context.lineTo(pol3[1].x,pol3[1].y);
+				context.stroke();
+				context.beginPath();
+				context.moveTo(pol3[3].x,pol3[3].y);
+				context.lineTo(pol3[2].x,pol3[2].y);
+				context.stroke();
+			}
+
+
+
+
+			//Phone
+			phoneImg=new Image();
+			phoneImg.src="images/Phone.png";
+			context.drawImage(phoneImg,5*width/8,height/4,width/4,3*height/4);
 		}
 	}
 }
