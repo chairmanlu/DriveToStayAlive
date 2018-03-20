@@ -256,7 +256,7 @@ function playGame(){
 		var car={
 			width:height/5,
 			height:height/10,
-			xPos:10+height/10,
+			xPos:(10+height/10),
 			yPos:height/2+height/30+height/20,
 			xVel:0,
 			yVel:0,
@@ -415,20 +415,133 @@ function playGame(){
 					top:height/2-height/30-height/20-height/6-car.height/2+(i%2*height/6),
 					bottom:height/2-height/30-height/20-height/6-car.height/2+(i%2*height/6)+car.height
 				}
-				if(isOverlapping(rect1,rect2)){
+				/*if(isOverlapping(rect1,rect2)){
 					//alert("Crash");
 					gameOver();
-					/*console.log(rect1);
-					console.log(rect2);*/
+					console.log(rect1);
+					console.log(rect2);
 				}
 				if(isOverlapping(rect1,rect3)){
 					//alert("Crash");
 					gameOver();
+				}*/
+				var p1={
+					x:(10+height/10)+car.width/2*Math.cos(car.wheelDeg*Math.PI/180)-car.height/2*Math.sin(car.wheelDeg*Math.PI/180),
+					y:car.yPos+car.width/2*Math.sin(car.wheelDeg*Math.PI/180)+car.height/2*Math.cos(car.wheelDeg*Math.PI/180)
+				}
+				var p2={
+					x:(10+height/10)+car.width/2*Math.cos(car.wheelDeg*Math.PI/180)+car.height/2*Math.sin(car.wheelDeg*Math.PI/180),
+					y:car.yPos+car.width/2*Math.sin(car.wheelDeg*Math.PI/180)-car.height/2*Math.cos(car.wheelDeg*Math.PI/180)
+				}
+				var p3={
+					x:(10+height/10)-car.width/2*Math.cos(car.wheelDeg*Math.PI/180)-car.height/2*Math.sin(car.wheelDeg*Math.PI/180),
+					y:car.yPos-car.width/2*Math.sin(car.wheelDeg*Math.PI/180)+car.height/2*Math.cos(car.wheelDeg*Math.PI/180)
+				}
+				var p4={
+					x:(10+height/10)-car.width/2*Math.cos(car.wheelDeg*Math.PI/180)+car.height/2*Math.sin(car.wheelDeg*Math.PI/180),
+					y:car.yPos-car.width/2*Math.sin(car.wheelDeg*Math.PI/180)-car.height/2*Math.cos(car.wheelDeg*Math.PI/180)
+				}
+				var pol1=[p1,p2,p3,p4];
+				console.log("("+p1.x+","+p1.y+")"+","+"("+p2.x+","+p2.y+")"+","+"("+p3.x+","+p3.y+")"+","+"("+p4.x+","+p4.y+")");
+				var pol2=[{x:rect2.left,y:rect2.top},{x:rect2.right,y:rect2.top},{x:rect2.right,y:rect2.bottom},{x:rect2.left,y:rect2.bottom}];
+				var pol3=[{x:rect3.left,y:rect3.top},{x:rect3.right,y:rect3.top},{x:rect3.right,y:rect3.bottom},{x:rect3.left,y:rect3.bottom}];
+				if(isIntersecting(pol1,pol2)){
+					gameOver();
+					return;
+				}
+
+				if(isIntersecting(pol1,pol3)){
+					gameOver();
+					return;
+				}
+
+				if(car.yPos-(car.height/2)<1*height/8){
+					gameOver();
+					return;
+				}
+				if(car.yPos+(car.height/2)>7*height/8){
+					gameOver();
+					return;
 				}
 			}
 			function isOverlapping(r1,r2){
 				return !(r2.left > r1.right || r2.right < r1.left || r2.top > r1.bottom ||r2.bottom < r1.top);//Intersection Code from Stackoverflow User Daniel Vassallo https://stackoverflow.com/questions/2752349/fast-rectangle-to-rectangle-intersection
 			}
+
+			/**
+			 * Helper function to determine whether there is an intersection between the two polygons described
+			 * by the lists of vertices. Uses the Separating Axis Theorem
+			 *
+			 * @param a an array of connected points [{x:, y:}, {x:, y:},...] that form a closed polygon
+			 * @param b an array of connected points [{x:, y:}, {x:, y:},...] that form a closed polygon
+			 * @return true if there is any intersection between the 2 polygons, false 
+			 *
+			 * Function from Stackoverflow user Markus Jarderot/mstenroos https://stackoverflow.com/questions/10962379/how-to-check-intersection-between-2-rotated-rectangles
+			 */
+			function isIntersecting (a, b) {
+				var polygons = [a, b];
+				var minA, maxA, projected, i, i1, j, minB, maxB;
+
+				for (i = 0; i < polygons.length; i++) {
+
+					// for each polygon, look at each edge of the polygon, and determine if it separates
+					// the two shapes
+					var polygon = polygons[i];
+					for (i1 = 0; i1 < polygon.length; i1++) {
+
+						// grab 2 vertices to create an edge
+						var i2 = (i1 + 1) % polygon.length;
+						var p1 = polygon[i1];
+						var p2 = polygon[i2];
+
+						// find the line perpendicular to this edge
+						var normal = { x: p2.y - p1.y, y: p1.x - p2.x };
+
+						minA = maxA = undefined;
+						// for each vertex in the first shape, project it onto the line perpendicular to the edge
+						// and keep track of the min and max of these values
+						for (j = 0; j < a.length; j++) {
+							projected = normal.x * a[j].x + normal.y * a[j].y;
+							if (isUndefined(minA) || projected < minA) {
+								minA = projected;
+							}
+							if (isUndefined(maxA) || projected > maxA) {
+								maxA = projected;
+							}
+						}
+
+						// for each vertex in the second shape, project it onto the line perpendicular to the edge
+						// and keep track of the min and max of these values
+						minB = maxB = undefined;
+						for (j = 0; j < b.length; j++) {
+							projected = normal.x * b[j].x + normal.y * b[j].y;
+							if (isUndefined(minB) || projected < minB) {
+								minB = projected;
+							}
+							if (isUndefined(maxB) || projected > maxB) {
+								maxB = projected;
+							}
+						}
+
+						// if there is no overlap between the projects, the edge we are looking at separates the two
+						// polygons, and we know there is no overlap
+						if (maxA < minB || maxB < minA) {
+							return false;
+						}
+					}
+				}
+				return true;
+
+				function isUndefined(v){
+					return v===undefined;
+				}
+			}
+
+
+
+
+
+
 
 			function gameOver(){
 				crashed=true;
@@ -477,10 +590,21 @@ function playGame(){
 			//Road
 			context.fillStyle="#000000";
 			context.fillRect(0,height/6,width,2*height/3);
+			
+			//Shoulder Barriers
+			context.strokeStyle="#424242";
+			context.lineWidth="5";
+			context.beginPath();
+			context.moveTo(0,height/8);
+			context.lineTo(width,height/8);
+			context.stroke();
 
+			context.beginPath();
+			context.moveTo(0,7*height/8);
+			context.lineTo(width,7*height/8);
+			context.stroke();
 			//Center Line
 			context.strokeStyle="#FFFF00";
-			context.lineWidth="5";
 			context.beginPath();
 			context.moveTo(0,height/2);
 			context.lineTo(width,height/2);
