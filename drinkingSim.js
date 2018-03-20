@@ -428,20 +428,20 @@ function playGame(){
 
 				//Rectangle formula by Sunjae Lee.
 				var p1={
-					x:(10+height/10)+car.width/2*Math.cos(car.wheelDeg*Math.PI/180)-car.height/2*Math.sin(car.wheelDeg*Math.PI/180),
-					y:car.yPos+car.width/2*Math.sin(car.wheelDeg*Math.PI/180)+car.height/2*Math.cos(car.wheelDeg*Math.PI/180)
+					x:(10+height/10)+(7*car.width/8)/2*Math.cos(car.wheelDeg*Math.PI/180)-(7*car.height/8)/2*Math.sin(car.wheelDeg*Math.PI/180),
+					y:car.yPos+(7*car.width/8)/2*Math.sin(car.wheelDeg*Math.PI/180)+(7*car.height/8)/2*Math.cos(car.wheelDeg*Math.PI/180)
 				}
 				var p2={
-					x:(10+height/10)+car.width/2*Math.cos(car.wheelDeg*Math.PI/180)+car.height/2*Math.sin(car.wheelDeg*Math.PI/180),
-					y:car.yPos+car.width/2*Math.sin(car.wheelDeg*Math.PI/180)-car.height/2*Math.cos(car.wheelDeg*Math.PI/180)
+					x:(10+height/10)+(7*car.width/8)/2*Math.cos(car.wheelDeg*Math.PI/180)+(7*car.height/8)/2*Math.sin(car.wheelDeg*Math.PI/180),
+					y:car.yPos+(7*car.width/8)/2*Math.sin(car.wheelDeg*Math.PI/180)-(7*car.height/8)/2*Math.cos(car.wheelDeg*Math.PI/180)
 				}
 				var p3={
-					x:(10+height/10)-car.width/2*Math.cos(car.wheelDeg*Math.PI/180)-car.height/2*Math.sin(car.wheelDeg*Math.PI/180),
-					y:car.yPos-car.width/2*Math.sin(car.wheelDeg*Math.PI/180)+car.height/2*Math.cos(car.wheelDeg*Math.PI/180)
+					x:(10+height/10)-(7*car.width/8)/2*Math.cos(car.wheelDeg*Math.PI/180)-(7*car.height/8)/2*Math.sin(car.wheelDeg*Math.PI/180),
+					y:car.yPos-(7*car.width/8)/2*Math.sin(car.wheelDeg*Math.PI/180)+(7*car.height/8)/2*Math.cos(car.wheelDeg*Math.PI/180)
 				}
 				var p4={
-					x:(10+height/10)-car.width/2*Math.cos(car.wheelDeg*Math.PI/180)+car.height/2*Math.sin(car.wheelDeg*Math.PI/180),
-					y:car.yPos-car.width/2*Math.sin(car.wheelDeg*Math.PI/180)-car.height/2*Math.cos(car.wheelDeg*Math.PI/180)
+					x:(10+height/10)-(7*car.width/8)/2*Math.cos(car.wheelDeg*Math.PI/180)+(7*car.height/8)/2*Math.sin(car.wheelDeg*Math.PI/180),
+					y:car.yPos-(7*car.width/8)/2*Math.sin(car.wheelDeg*Math.PI/180)-(7*car.height/8)/2*Math.cos(car.wheelDeg*Math.PI/180)
 				}
 
 				var pol1=[p1,p2,p3,p4];
@@ -634,8 +634,8 @@ function playGame(){
 				context.drawImage(bar,0,0,3*width/4,height);
 			}*/
 			var num=1;
-			//carImg.src="images/CarRight"+num+".png";
-			carImg.src="images/BarBackground.jpg";
+			carImg.src="images/CarRight"+num+".png";
+			// carImg.src="images/BarBackground.jpg";
 			context.translate(10+height/10, car.yPos);
 			context.rotate(car.wheelDeg*Math.PI/180);
 			context.drawImage(carImg,0,(-car.height/2),car.width,car.height);
@@ -650,10 +650,10 @@ function playGame(){
 				//var num2=Math.ceil(Math.random()*7);
 				car1Img=new Image();
 				car2Img=new Image();
-				//car1Img.src="images/CarRight"+(i+1)+".png";
-				//car2Img.src="images/CarLeft"+(i+1)+".png";
-				car1Img.src="images/BarBackground.jpg";
-				car2Img.src="images/BarBackground.jpg";
+				car1Img.src="images/CarRight"+(i+1)+".png";
+				car2Img.src="images/CarLeft"+(i+1)+".png";
+				/*car1Img.src="images/BarBackground.jpg";
+				car2Img.src="images/BarBackground.jpg";*/
 				context.drawImage(car1Img,rightCars[i],height/2+height/30+height/20-car.height/2+(i%2*height/6),car.width,car.height);
 				context.drawImage(car2Img,leftCars[i],height/2-height/30-height/6-height/20-car.height/2+(i%2*height/6),car.width,car.height);
 			}
