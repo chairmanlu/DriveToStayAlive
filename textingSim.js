@@ -322,7 +322,9 @@ function playGame(){
 				case 38:
 					//Up
 					car.accel=0.5;
-					sounds[1].play();
+					if(!crashed){
+						sounds[1].play();
+					}
 					break;
 				case 39:
 					//Right

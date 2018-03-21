@@ -499,7 +499,9 @@ function playGame(){
 					if(bac>=0.04){
 						car.accel+=bac*10;
 					}
-					sounds[1].play();
+					if(!crashed){
+						sounds[1].play();
+					}
 					break;
 				case 39:
 					//Right
