@@ -24,7 +24,6 @@ function onStart(){
 	var loaded1=false;
 	var loaded2=false;
 	loadImage(0);
-	loadImage(0);
 	context.fillStyle="424242";
 	context.font="60px Impact";
 	context.textAlign="center";

@@ -20,10 +20,14 @@ var context=canvas.getContext("2d");
 //Right cars even, left cars odd
 var carImages=[null,null,null,null,null,null,null,null,null,null,null,null,null,null];
 
+var songs=[null,null];
+
 function onStart(){
-	var loaded1=false;
-	var loaded2=false;
-	loadImage(0);
+	songs[0]=new Audio("audio/Hot Swing.mp3");
+	songs[0].play();
+	songs[0].onended=function(){
+		songs[0].play();
+	}
 	loadImage(0);
 	context.fillStyle="424242";
 	context.font="60px Impact";
@@ -36,7 +40,6 @@ function onStart(){
 			side="Left";
 		}
 		carImages[index]=new Image();
-		console.log(index+" "+carImages.length);
 		carImages[index].src="images/Car"+side+(Math.floor(index/2)+1)+".png";
 		if(index===carImages.length-1){
 			carImages[index].onload = function(){
@@ -103,21 +106,21 @@ function startGame(){
 	context.fillText(creditsButton.text,creditsButton.x,creditsButton.y+creditsButton.height/2);
 	
 	canvas.addEventListener("click",menuClickListener,false);
-
 	function menuClickListener(evt){
 		var mousePos=getMousePos(canvas,evt);
 		if(isInside(mousePos,startButton)){
-			playGame();
 			canvas.removeEventListener("click",menuClickListener);
+			playGame();
+			
 		}
 		else if(isInside(mousePos,helpButton)){
-			help();
 			canvas.removeEventListener("click",menuClickListener);
+			help();
 
 		}
 		else if(isInside(mousePos,creditsButton)){
-			credits();
 			canvas.removeEventListener("click",menuClickListener);
+			credits();
 		}
 	}
 }
@@ -216,7 +219,7 @@ function isInside(pos, rect){
 function playGame(){
 	var bac=0.0;
 	drawMenu(true);
-	
+	return;
 	function drawMenu(drawBar){
 		if(drawBar){
 			context.clearRect(0, 0, canvas.width, canvas.height);
@@ -228,6 +231,7 @@ function playGame(){
 			}
 			bar.src="images/BarBackground.jpg";
 			canvas.addEventListener("click",gameClickListener,false);
+			//alert("added");
 		}
 		else{
 			context.clearRect(3*width/4, 0, canvas.width/4, canvas.height);
@@ -295,9 +299,11 @@ function playGame(){
 					canvas.removeEventListener("click",gameClickListener);
 					drawAlert(0.14);
 				}
+				return;
 			}
 			else if(isInside(mousePos,driveButton)){
 				canvas.removeEventListener("click",gameClickListener);
+				//alert("drive");
 				drive();
 				return;
 			}
@@ -494,6 +500,9 @@ function playGame(){
 
 		function moveEverything(){
 			var turnAmt=1/*Math.floor(Math.random()*10)*/;
+			if(crashed){
+				return;
+			}
 			if(bac>=0.04){//BAC 0.04 Erratic Turning
 				turnAmt=Math.ceil(Math.random()*bac*100);
 			}
@@ -623,6 +632,8 @@ function playGame(){
 					return;
 				}
 				if(car.yPos+(car.height/2)>7*height/8){
+					//alert("Crash");
+					console.log(car.xPos+","+car.yPos);
 					gameOver(false);
 					return;
 				}
@@ -823,8 +834,10 @@ function playGame(){
 				//var num2=Math.ceil(Math.random()*7);
 				/*car1Img.src="images/BarBackground.jpg";
 				car2Img.src="images/BarBackground.jpg";*/
-				context.drawImage(carImages[(rightCars[i].color-1)*2],rightCars[i].d,height/2+height/30+height/20-car.height/2+(rightCars[i].lane%2*height/6),car.width,car.height);
-				context.drawImage(carImages[(leftCars[i].color-1)*2+1],leftCars[i].d,height/2-height/30-height/6-height/20-car.height/2+(leftCars[i].lane%2*height/6),car.width,car.height);
+				var carImg1=carImages[(rightCars[i].color-1)*2];
+				var carImg2=carImages[(leftCars[i].color-1)*2+1];
+				context.drawImage(carImg1,rightCars[i].d,height/2+height/30+height/20-car.height/2+(rightCars[i].lane%2*height/6),car.width,car.height);
+				context.drawImage(carImg2,leftCars[i].d,height/2-height/30-height/6-height/20-car.height/2+(leftCars[i].lane%2*height/6),car.width,car.height);
 			}
 
 
