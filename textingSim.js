@@ -20,11 +20,11 @@ var context=canvas.getContext("2d");
 
 var carImages=[null,null,null,null,null,null,null,null,null,null,null,null,null,null];
 
+var sounds=[null,null,null,null,null,null];
+var songs=[null];
 function onStart(){
-	var loaded1=false;
-	var loaded2=false;
 	loadImage(0);
-	context.fillStyle="424242";
+	context.fillStyle="#215EF7";
 	context.font="60px Impact";
 	context.textAlign="center";
 	context.textBaseline="middle";
@@ -35,17 +35,49 @@ function onStart(){
 			side="Left";
 		}
 		carImages[index]=new Image();
-		console.log(index+" "+carImages.length);
 		carImages[index].src="images/Car"+side+(Math.floor(index/2)+1)+".png";
 		if(index===carImages.length-1){
 			carImages[index].onload = function(){
-				startGame();
+				loadSounds();
 			}
 			return;
 		}
 		carImages[index].onload = function(){
 			loadImage(index+1);
 		}
+	}
+
+	function loadSounds(){
+		songs[0]=new Audio("audio/Dispersion Relation.mp3");
+		songs[0].play();
+		songs[0].onended=function(){
+			songs[0].play();
+		}
+		sounds[0]=new Audio("audio/Crash.mp3");
+		sounds[1]=new Audio("audio/Rev.mp3");
+		sounds[2]=new Audio("audio/Honk.mp3");
+		sounds[3]=new Audio("audio/Type.mp3");
+		sounds[4]=new Audio("audio/Message Sent.mp3");
+		sounds[5]=new Audio("audio/Message Received.mp3");
+		
+		/*loadA(0);
+
+		function loadA(index){
+			sounds[index].load();
+			if(index===sounds.length-1){
+				sounds[index].onloadeddata=function(){
+					startGame();
+					return;
+				}
+			}
+			else{
+				sounds[index].onloadeddata=function(){
+					console.log(index);
+					loadA(index+1);
+				}
+			}
+		}*/
+		startGame();
 	}
 }
 
@@ -107,14 +139,106 @@ function startGame(){
 	function menuClickListener(evt){
 		var mousePos=getMousePos(canvas,evt);
 		if(isInside(mousePos,startButton)){
-			playGame();
 			canvas.removeEventListener("click",menuClickListener);
+			playGame();
 		}
 		else if(isInside(mousePos,helpButton)){
-			alert("help");
+			canvas.removeEventListener("click",menuClickListener);
+			help();
 		}
 		else if(isInside(mousePos,creditsButton)){
-			alert("credits");
+			canvas.removeEventListener("click",menuClickListener);
+			credits();
+		}
+	}
+}
+
+function help(){
+	var menuButton={
+		x:width/2,
+		y: 3*height/4,
+		width: width/10,
+		height: height/10,
+		text: "Menu"
+	}
+
+	context.clearRect(0,0,width,height);
+	context.fillStyle="#215EF7";
+	context.fillRect(0,0,width,height);
+	//Menu Button
+	context.strokeStyle="#FFFFFF";
+	context.fillStyle="#FFFFFF";
+	context.textBaseline="middle";
+	context.textAlign="center";
+	context.font="60px Impact";
+	context.fillText("Instructions",width/2,height/10);
+	context.font="32px Impact";
+	context.fillText("Use the up arrow to accelerate and down arrow to brake.",width/2,3*height/10);
+	context.fillText("Use the left and right arrows to turn.",width/2,4*height/10);
+	context.fillText("Avoid the other cars. If you go too slowly, you will get rear ended.", width/2, 5*height/10);
+	context.fillText("Click on the numberpad to type in the answers to questions on the phone.",width/2,6*height/10);
+	context.fillText("Click Enter to submit the answer.", width/2, 7*height/10);
+	context.lineWidth="4";
+	context.strokeRect(menuButton.x-menuButton.width/2,menuButton.y,menuButton.width,menuButton.height);
+	context.fillText(menuButton.text,menuButton.x,menuButton.y+menuButton.height/2);
+	canvas.addEventListener("click",menuButtonListener,false);
+
+	function menuButtonListener(evt){
+		var mousePos=getMousePos(canvas,evt);
+		if(isInside(mousePos, menuButton)){
+			startGame();
+			canvas.removeEventListener("click",menuButtonListener);
+		}
+	}
+}
+
+function credits(){
+	var menuButton={
+		x:width/2,
+		y: 3*height/4,
+		width: width/10,
+		height: height/10,
+		text: "Menu"
+	}
+
+	context.clearRect(0,0,width,height);
+	//Menu Button
+	context.fillStyle="#215EF7";
+	context.fillRect(0,0,width,height);
+	context.strokeStyle="#FFFFFF";
+	context.fillStyle="#FFFFFF";
+	context.textBaseline="middle";
+	context.textAlign="center";
+	context.font="60px Impact";
+	context.fillText("Credits",width/2,height/10);
+	context.font="24px Impact";
+	context.fillText("Programming: Steven Lu",width/4,4*height/20);
+	context.fillText("Images: Pixabay, Wikimedia Commons",width/4,5*height/20);
+	context.fillText("Special Thanks: Stackoverflow, Sunjae Lee",width/4,6*height/20);
+	context.fillText("Music:",width/4,8*height/20);
+	context.fillText("\"Dispersion Relation\" Kevin MacLeod (incompetech.com)",width/4,9*height/20);
+	context.fillText("Licensed under Creative Commons: By Attribution 3.0 License",width/4,10*height/20);
+	context.fillText("http://creativecommons.org/licenses/by/3.0/",width/4,11*height/20);
+
+	context.fillText("Sound Effects",3*width/4,4*height/20);
+	context.fillText("Crash-Cam Martinez http://soundbible.com/1757-Car-Brake-Crash.html",3*width/4,6*height/20);
+	context.fillText("Rev-Mike Koenig http://soundbible.com/804-Engine-Rev-Inside-Car.html",3*width/4,7*height/20);
+	context.fillText("Honk-Mike Koenig http://soundbible.com/1048-Horn-Honk.html",3*width/4,8*height/20);
+	context.fillText("Type-Tash Hockey https://www.youtube.com/watch?v=zdB6pWWVmaU",3*width/4,9*height/20);
+	context.fillText("Message Sent-Jason Harrison https://www.youtube.com/watch?v=9pzvzQfy7uY",3*width/4,10*height/20);
+	context.fillText("Message Sent-Jason Harrison https://www.youtube.com/watch?v=9pzvzQfy7uY",3*width/4,11*height/20);
+	context.lineWidth="4";
+	context.strokeRect(menuButton.x-menuButton.width/2,menuButton.y,menuButton.width,menuButton.height);
+	context.fillText(menuButton.text,menuButton.x,menuButton.y+menuButton.height/2);
+	
+	canvas.addEventListener("click",menuButtonListener,false);
+
+	function menuButtonListener(evt){
+		var mousePos=getMousePos(canvas,evt);
+		if(isInside(mousePos, menuButton)){
+			//alert("click");
+			startGame();
+			canvas.removeEventListener("click",menuButtonListener);
 		}
 	}
 }
@@ -194,6 +318,7 @@ function playGame(){
 				case 38:
 					//Up
 					car.accel=0.5;
+					sounds[1].play();
 					break;
 				case 39:
 					//Right
@@ -216,6 +341,8 @@ function playGame(){
 				case 38:
 					//Up
 					car.accel=0;
+					sounds[1].stop();
+					sounds[1].load();
 					break;
 				case 39:
 					//Right
@@ -233,7 +360,7 @@ function playGame(){
 		var num1=Math.floor(Math.random()*13);
 		var num2=Math.floor(Math.random()*13);
 		var operation=Math.floor(Math.random()*3);
-		var operations=['+','-','*'];
+		var operations=['+','-','*',' '];
 		var userNum="";
 		var totalQuestions=0;
 		var correct=0;
@@ -277,6 +404,8 @@ function playGame(){
 			var mousePos=getMousePos(canvas,evt);
 			for(var i=0;i<12;i++){
 				if(isInside(mousePos,numPad[i])){
+					sounds[3].play();
+					setTimeout(function(){sounds[3].load()},200);
 					//alert(numPad[i].x+","+numPad[i].width+"|"+mousePos.x);
 					if(numPad[i].text==="Enter"){
 						if(parseInt(userNum)===answer){
@@ -285,23 +414,29 @@ function playGame(){
 						}
 						userNum="";
 						totalQuestions++;
-						num1=Math.floor(Math.random()*13);
-						num2=Math.floor(Math.random()*13);
-						operation=Math.floor(Math.random()*3);
-						answer=num1+num2;
-						if(operation===1){
-							answer=num1-num2;
-						}
-						if(operation===2){
-							answer=num1*num2;
-						}
+						sounds[4].play();
+						setTimeout(function(){
+							newQuestion();
+						},1000);
 					}
 					else if(userNum.length<10){
 						userNum+=numPad[i].text;
 					}
 				}
 			}
-
+			function newQuestion(){
+				sounds[5].play();
+				num1=Math.floor(Math.random()*13);
+				num2=Math.floor(Math.random()*13);
+				operation=Math.floor(Math.random()*3);
+				answer=num1+num2;
+				if(operation===1){
+					answer=num1-num2;
+				}
+				if(operation===2){
+					answer=num1*num2;
+				}
+			}
 		}
 
 		
@@ -327,8 +462,14 @@ function playGame(){
 			}
 			if(car.speed<maxSpeed/2){
 				deathCount++;
+				if(deathCount==3*fps){
+					sounds[2].play();
+					setTimeout(function(){
+						sounds[2].load();
+					},500);
+				}
 			}
-			else{
+			else if(deathCount>0){
 				deathCount--;
 			}
 			if(car.speed>maxSpeed){
@@ -581,7 +722,7 @@ function playGame(){
 			function gameOver(rearEnded){
 				crashed=true;
 				clearInterval(interval);
-
+				sounds[0].play();
 				drawEverything(true);
 				canvas.removeEventListener("click",numPadListener);
 				var retryButton={
@@ -819,7 +960,7 @@ function playGame(){
 			context.fillStyle="#000000";
 			context.textAlign="center";
 			context.font="32px Arial";
-			context.fillText("What is "+num1+" "+operations[operation]+" "+num2+"?",3*width/4,height/6);
+			context.fillText(num1+" "+operations[operation]+" "+num2,3*width/4,height/6);
 
 			//Numpad
 			context.strokeStyle="#000000";

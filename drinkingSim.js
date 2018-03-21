@@ -20,14 +20,10 @@ var context=canvas.getContext("2d");
 //Right cars even, left cars odd
 var carImages=[null,null,null,null,null,null,null,null,null,null,null,null,null,null];
 
-var songs=[null,null];
+var songs=[null];
+var sounds=[null,null,null,null,null,null];
 
 function onStart(){
-	songs[0]=new Audio("audio/Hot Swing.mp3");
-	songs[0].play();
-	songs[0].onended=function(){
-		songs[0].play();
-	}
 	loadImage(0);
 	context.fillStyle="424242";
 	context.font="60px Impact";
@@ -43,13 +39,46 @@ function onStart(){
 		carImages[index].src="images/Car"+side+(Math.floor(index/2)+1)+".png";
 		if(index===carImages.length-1){
 			carImages[index].onload = function(){
-				startGame();
+				loadSounds();
 			}
 			return;
 		}
 		carImages[index].onload = function(){
 			loadImage(index+1);
 		}
+	}
+
+	function loadSounds(){
+		songs[0]=new Audio("audio/Dispersion Relation.mp3");
+		songs[0].play();
+		songs[0].onended=function(){
+			songs[0].play();
+		}
+		sounds[0]=new Audio("audio/Crash.mp3");
+		sounds[1]=new Audio("audio/Rev.mp3");
+		sounds[2]=new Audio("audio/Honk.mp3");
+		sounds[3]=new Audio("audio/Ice.mp3");
+		sounds[4]=new Audio("audio/Drink.mp3");
+		sounds[5]=new Audio("audio/Hiccup.mp3");
+		
+		/*loadA(0);
+
+		function loadA(index){
+			sounds[index].load();
+			if(index===sounds.length-1){
+				sounds[index].onloadeddata=function(){
+					startGame();
+					return;
+				}
+			}
+			else{
+				sounds[index].onloadeddata=function(){
+					console.log(index);
+					loadA(index+1);
+				}
+			}
+		}*/
+		startGame();
 	}
 }
 
@@ -147,6 +176,9 @@ function help(){
 	context.font="32px Impact";
 	context.fillText("Use the up arrow to accelerate and down arrow to brake.",width/2,3*height/10);
 	context.fillText("Use the left and right arrows to turn.",width/2,4*height/10);
+	context.fillText("Avoid the other cars. If you go too slowly, you will get rear ended.", width/2, 5*height/10);
+	context.fillText("Click the 'Take a Shot' button to increase your BAC.", width/2, 6*height/10);
+	context.fillText("There will be different effects from different BAC levels.", width/2, 7*height/10);
 	context.lineWidth="4";
 	context.strokeRect(menuButton.x-menuButton.width/2,menuButton.y,menuButton.width,menuButton.height);
 	context.fillText(menuButton.text,menuButton.x,menuButton.y+menuButton.height/2);
@@ -180,16 +212,28 @@ function credits(evt){
 	context.textAlign="center";
 	context.font="60px Impact";
 	context.fillText("Credits",width/2,height/10);
-	context.font="32px Impact";
-	context.fillText("Programming: Steven Lu",width/2,3*height/10);
-	context.fillText("Images: Pixabay, Wikimedia Commons",width/2,4*height/10);
-	context.fillText("Special Thanks: Stackoverflow, Sunjae Lee",width/2,5*height/10);
+	context.font="24px Impact";
+	context.fillText("Programming: Steven Lu",width/4,4*height/20);
+	context.fillText("Images: Pixabay, Wikimedia Commons",width/4,5*height/20);
+	context.fillText("Special Thanks: Stackoverflow, Sunjae Lee",width/4,6*height/20);
+	context.fillText("Music:",width/4,8*height/20);
+	context.fillText("\"Dispersion Relation\" Kevin MacLeod (incompetech.com)",width/4,9*height/20);
+	context.fillText("Licensed under Creative Commons: By Attribution 3.0 License",width/4,10*height/20);
+	context.fillText("http://creativecommons.org/licenses/by/3.0/",width/4,11*height/20);
+
+	context.fillText("Sound Effects",3*width/4,4*height/20);
+	context.fillText("Crash-Cam Martinez http://soundbible.com/1757-Car-Brake-Crash.html",3*width/4,6*height/20);
+	context.fillText("Rev-Mike Koenig http://soundbible.com/804-Engine-Rev-Inside-Car.html",3*width/4,7*height/20);
+	context.fillText("Honk-Mike Koenig http://soundbible.com/1048-Horn-Honk.html",3*width/4,8*height/20);
+	context.fillText("Drink-fille1000 http://soundbible.com/1502-Slurping-2.html",3*width/4,9*height/20);
+	context.fillText("Ice-Daniel Simion http://soundbible.com/2182-Ice-Cubes-Glass.html",3*width/4,10*height/20);
+	context.fillText("Hiccup-Mike Koenig http://soundbible.com/861-Hiccup.html",3*width/4,11*height/20);
 	context.lineWidth="4";
 	context.strokeRect(menuButton.x-menuButton.width/2,menuButton.y,menuButton.width,menuButton.height);
 	context.fillText(menuButton.text,menuButton.x,menuButton.y+menuButton.height/2);
 	canvas.addEventListener("click",menuButtonListener,false);
 
-	function menuButtonListener(){
+	function menuButtonListener(evt){
 		var mousePos=getMousePos(canvas,evt);
 		if(isInside(mousePos, menuButton)){
 			startGame();
@@ -281,6 +325,16 @@ function playGame(){
 			var mousePos=getMousePos(canvas,evt);
 			if(isInside(mousePos,drinkButton)){
 				bac+=0.02;
+				sounds[3].play();
+				setTimeout(function(){
+					sounds[4].play();
+					setTimeout(function(){
+						sounds[5].play();
+						sounds[3].load();
+						sounds[4].load();
+						sounds[5].load();
+					},1500);
+				},1500);
 				//alert("removed");
 				drawMenu(false);
 				if(bac===0.04){
@@ -347,7 +401,7 @@ function playGame(){
 					context.fillText("In Game Effects: Less Speed Control", width/2, height/2);
 					break;
 				case 0.1:
-					context.fillText("Real Life Effects: Inability To Maintain Lane Position and Brake, Lower Reaction Time", width/2, 2*height/5);
+					context.fillText("Real Life Effects: Inability To Maintain Lane Position and Brake, Slower Reaction Time", width/2, 2*height/5);
 					context.fillText("In Game Effects: Turning and Braking Will Be Delayed", width/2, height/2);
 					break;
 				case 0.14:
@@ -441,6 +495,7 @@ function playGame(){
 					if(bac>=0.04){
 						car.accel+=bac*10;
 					}
+					sounds[1].play();
 					break;
 				case 39:
 					//Right
@@ -473,6 +528,8 @@ function playGame(){
 				case 38:
 					//Up
 					car.accel=0;
+					sounds[1].stop();
+					sounds[1].load();
 					break;
 				case 39:
 					//Right
@@ -512,8 +569,14 @@ function playGame(){
 				car.speed=0;
 				car.accel=0;
 			}
-			if(car.speed<maxSpeed/2){
+			if(car.speed<otherCarSpeed){
 				deathCount++;
+				if(deathCount==3*fps){
+					sounds[2].play();
+					setTimeout(function(){
+						sounds[2].load();
+					},500);
+				}
 			}
 			else if(deathCount>0){
 				deathCount--;
@@ -715,6 +778,7 @@ function playGame(){
 
 			function gameOver(rearEnded){
 				crashed=true;
+				sounds[0].play();
 				clearInterval(interval);
 
 				drawEverything(true);
