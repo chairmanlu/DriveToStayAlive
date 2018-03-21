@@ -25,10 +25,13 @@ var songs=[null];
 function onStart(){
 	loadImage(0);
 	context.fillStyle="#215EF7";
+	context.fillRect(0,0,width,height);
+	context.fillStyle="#FFFFFF";
 	context.font="60px Impact";
 	context.textAlign="center";
 	context.textBaseline="middle";
 	context.fillText("Loading...",width/2,height/2);
+	context.strokeRect(width/4,3*height/5,width/2,height/20);
 	function loadImage(index){
 		var side="Right";
 		if(index%2===1){
@@ -36,6 +39,7 @@ function onStart(){
 		}
 		carImages[index]=new Image();
 		carImages[index].src="images/Car"+side+(Math.floor(index/2)+1)+".png";
+		context.fillRect(width/4,3*height/5,index*width/28,height/20);
 		if(index===carImages.length-1){
 			carImages[index].onload = function(){
 				loadSounds();
@@ -341,8 +345,6 @@ function playGame(){
 				case 38:
 					//Up
 					car.accel=0;
-					sounds[1].stop();
-					sounds[1].load();
 					break;
 				case 39:
 					//Right
@@ -415,9 +417,13 @@ function playGame(){
 						userNum="";
 						totalQuestions++;
 						sounds[4].play();
+						num1="";
+						num2="";
+						operation=3;
+						answer=-99999999;
 						setTimeout(function(){
 							newQuestion();
-						},1000);
+						},Math.ceil(Math.random()*3)*1000);
 					}
 					else if(userNum.length<10){
 						userNum+=numPad[i].text;
