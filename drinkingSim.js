@@ -79,10 +79,86 @@ function startGame(){
 			canvas.removeEventListener("click",menuClickListener);
 		}
 		else if(isInside(mousePos,helpButton)){
-			alert("help");
+			help();
+			canvas.removeEventListener("click",menuClickListener);
+
 		}
 		else if(isInside(mousePos,creditsButton)){
-			alert("credits");
+			credits();
+			canvas.removeEventListener("click",menuClickListener);
+		}
+	}
+}
+
+function help(){
+	var menuButton={
+		x:width/2,
+		y: 3*height/4,
+		width: width/10,
+		height: height/10,
+		text: "Menu"
+	}
+
+	context.clearRect(0,0,width,height);
+	context.fillStyle="#424242";
+	context.fillRect(0,0,width,height);
+	//Menu Button
+	context.strokeStyle="#FFEB3B";
+	context.fillStyle="#FFEB3B";
+	context.textBaseline="middle";
+	context.textAlign="center";
+	context.font="60px Impact";
+	context.fillText("Instructions",width/2,height/10);
+	context.font="32px Impact";
+	context.fillText("Use the up arrow to accelerate and down arrow to brake.",width/2,3*height/10);
+	context.fillText("Use the left and right arrows to turn.",width/2,4*height/10);
+	context.lineWidth="4";
+	context.strokeRect(menuButton.x-menuButton.width/2,menuButton.y,menuButton.width,menuButton.height);
+	context.fillText(menuButton.text,menuButton.x,menuButton.y+menuButton.height/2);
+	canvas.addEventListener("click",menuButtonListener,false);
+
+	function menuButtonListener(evt){
+		var mousePos=getMousePos(canvas,evt);
+		if(isInside(mousePos, menuButton)){
+			startGame();
+			canvas.removeEventListener("click",menuButtonListener);
+		}
+	}
+}
+
+function credits(evt){
+	var menuButton={
+		x:width/2,
+		y: 3*height/4,
+		width: width/10,
+		height: height/10,
+		text: "Menu"
+	}
+
+	context.clearRect(0,0,width,height);
+	//Menu Button
+	context.fillStyle="#424242";
+	context.fillRect(0,0,width,height);
+	context.strokeStyle="#FFEB3B";
+	context.fillStyle="#FFEB3B";
+	context.textBaseline="middle";
+	context.textAlign="center";
+	context.font="60px Impact";
+	context.fillText("Credits",width/2,height/10);
+	context.font="32px Impact";
+	context.fillText("Programming: Steven Lu",width/2,3*height/10);
+	context.fillText("Images: Pixabay, Wikimedia Commons",width/2,4*height/10);
+	context.fillText("Special Thanks: Stackoverflow, Sunjae Lee",width/2,5*height/10);
+	context.lineWidth="4";
+	context.strokeRect(menuButton.x-menuButton.width/2,menuButton.y,menuButton.width,menuButton.height);
+	context.fillText(menuButton.text,menuButton.x,menuButton.y+menuButton.height/2);
+	canvas.addEventListener("click",menuButtonListener,false);
+
+	function menuButtonListener(){
+		var mousePos=getMousePos(canvas,evt);
+		if(isInside(mousePos, menuButton)){
+			startGame();
+			canvas.removeEventListener("click",menuButtonListener);
 		}
 	}
 }
@@ -197,18 +273,6 @@ function playGame(){
 
 		function drawAlert(n){
 			canvas.removeEventListener("click",gameClickListener);
-			switch(n){
-				case 0.04:
-					break;
-				case 0.08:
-					break;
-				case 0.1:
-					break;
-				case 0.14:
-					break;
-				default:
-					alert("Error: Unhandled Case: "+n);
-			}
 
 			var okButton={
 				x:width/2,
@@ -228,6 +292,33 @@ function playGame(){
 			context.strokeRect(okButton.x-okButton.width/2,okButton.y,okButton.width,okButton.height);
 			context.fillStyle="#FFEB3B";
 			context.fillText(okButton.text,okButton.x,okButton.y+okButton.height/2);
+
+			context.strokeStyle="#FFEB3B";
+			context.font="48px Impact";
+			context.textAlign="center";
+			context.textBaseline="middle";
+			context.fillText("BAC "+n,width/2,3*height/10);
+			context.font="28px Impact";
+			switch(n){
+				case 0.04:
+					context.fillText("Real Life Effects: Reduced Coordination, Difficulty Steering", width/2, 2*height/5);
+					context.fillText("In Game Effects: Steering becomes Erratic and Unpredicable", width/2, height/2);
+					break;
+				case 0.08:
+					context.fillText("Real Life Effects: Illegal to Drive in All States, Less Speed Control, Impaired Perception", width/2, 2*height/5);
+					context.fillText("In Game Effects: Less Speed Control", width/2, height/2);
+					break;
+				case 0.1:
+					context.fillText("Real Life Effects: Inability To Maintain Lane Position and Brake, Lower Reaction Time", width/2, 2*height/5);
+					context.fillText("In Game Effects: Turning and Braking Will Be Delayed", width/2, height/2);
+					break;
+				case 0.14:
+					context.fillText("Substantial Impairment to Visual and Audio Processing", width/2, 2*height/5);
+					context.fillText("Range of Vision Reduced", width/2, height/2);
+					break;
+				default:
+					alert("Error: Unhandled Case: "+n);
+			}
 
 			canvas.addEventListener("click",okClickListener,false);
 
