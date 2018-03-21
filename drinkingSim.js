@@ -17,6 +17,38 @@ var canvas=document.getElementById("myCanvas");
 var width=canvas.width;
 var height=canvas.height;
 var context=canvas.getContext("2d");
+//Right cars even, left cars odd
+var carImages=[null,null,null,null,null,null,null,null,null,null,null,null,null,null];
+
+function onStart(){
+	var loaded1=false;
+	var loaded2=false;
+	loadImage(0);
+	loadImage(0);
+	context.fillStyle="424242";
+	context.font="60px Impact";
+	context.textAlign="center";
+	context.textBaseline="middle";
+	context.fillText("Loading...",width/2,height/2);
+	function loadImage(index){
+		var side="Right";
+		if(index%2===1){
+			side="Left";
+		}
+		carImages[index]=new Image();
+		console.log(index+" "+carImages.length);
+		carImages[index].src="images/Car"+side+(Math.floor(index/2)+1)+".png";
+		if(index===carImages.length-1){
+			carImages[index].onload = function(){
+				startGame();
+			}
+			return;
+		}
+		carImages[index].onload = function(){
+			loadImage(index+1);
+		}
+	}
+}
 
 function startGame(){
 	context.fillStyle="#424242";
@@ -338,6 +370,8 @@ function playGame(){
 		context.clearRect(0,0,width,height);
 		var fps=60;
 
+		var deathCount=0;
+
 		var car={
 			width:height/5,
 			height:height/10,
@@ -458,9 +492,6 @@ function playGame(){
 		},1000/fps);
 
 
-		var deathCount=0;
-
-
 		function moveEverything(){
 			var turnAmt=1/*Math.floor(Math.random()*10)*/;
 			if(bac>=0.04){//BAC 0.04 Erratic Turning
@@ -475,7 +506,7 @@ function playGame(){
 			if(car.speed<maxSpeed/2){
 				deathCount++;
 			}
-			else{
+			else if(deathCount>0){
 				deathCount--;
 			}
 			if(car.speed>maxSpeed){
@@ -776,16 +807,11 @@ function playGame(){
 			}
 
 			//Car
-			var carImg=new Image();
-			/*car.onload = function(){
-				context.drawImage(bar,0,0,3*width/4,height);
-			}*/
-			var num=1;
-			carImg.src="images/CarRight"+num+".png";
+			
 			// carImg.src="images/BarBackground.jpg";
 			context.translate(10+height/10, car.yPos);
 			context.rotate(car.wheelDeg*Math.PI/180);
-			context.drawImage(carImg,-height/10,(-car.height/2),car.width,car.height);
+			context.drawImage(carImages[0],-height/10,(-car.height/2),car.width,car.height);
 			//context.fillStyle="#FF0000";
 			//context.fillRect(-car.width/2,-car.height/2,car.width,car.height);
 			context.rotate(-1*car.wheelDeg*Math.PI/180);
@@ -795,14 +821,10 @@ function playGame(){
 			for(var i=0;i<7;i++){
 				//var num1=Math.ceil(Math.random()*7);
 				//var num2=Math.ceil(Math.random()*7);
-				car1Img=new Image();
-				car2Img=new Image();
-				car1Img.src="images/CarRight"+(rightCars[i].color)+".png";
-				car2Img.src="images/CarLeft"+(leftCars[i].color)+".png";
 				/*car1Img.src="images/BarBackground.jpg";
 				car2Img.src="images/BarBackground.jpg";*/
-				context.drawImage(car1Img,rightCars[i].d,height/2+height/30+height/20-car.height/2+(rightCars[i].lane%2*height/6),car.width,car.height);
-				context.drawImage(car2Img,leftCars[i].d,height/2-height/30-height/6-height/20-car.height/2+(leftCars[i].lane%2*height/6),car.width,car.height);
+				context.drawImage(carImages[(rightCars[i].color-1)*2],rightCars[i].d,height/2+height/30+height/20-car.height/2+(rightCars[i].lane%2*height/6),car.width,car.height);
+				context.drawImage(carImages[(leftCars[i].color-1)*2+1],leftCars[i].d,height/2-height/30-height/6-height/20-car.height/2+(leftCars[i].lane%2*height/6),car.width,car.height);
 			}
 
 
