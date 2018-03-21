@@ -19,11 +19,21 @@ var height=canvas.height;
 var context=canvas.getContext("2d");
 
 var carImages=[null,null,null,null,null,null,null,null,null,null,null,null,null,null];
+var phoneImg=new Image();
+var textImg=new Image();
 
 var sounds=[null,null,null,null,null,null];
 var songs=[null];
 function onStart(){
-	loadImage(0);
+	phoneImg.src="images/Phone.png";
+	phoneImg.onload=function(){
+		textImg.src="images/TextingBackground.jpg";
+		context.fillRect(width/4,3*height/5,width/32,height/20);
+		textImg.onload=function(){
+			context.fillRect(width/4,3*height/5,width/16,height/20);
+			loadImage(0);
+		}
+	}
 	context.fillStyle="#215EF7";
 	context.fillRect(0,0,width,height);
 	context.fillStyle="#FFFFFF";
@@ -39,7 +49,7 @@ function onStart(){
 		}
 		carImages[index]=new Image();
 		carImages[index].src="images/Car"+side+(Math.floor(index/2)+1)+".png";
-		context.fillRect(width/4,3*height/5,index*width/28,height/20);
+		context.fillRect(width/4,3*height/5,(index+2)*width/32,height/20);
 		if(index===carImages.length-1){
 			carImages[index].onload = function(){
 				loadSounds();
@@ -92,11 +102,7 @@ function onStart(){
 function startGame(){
 	context.fillStyle="#215EF7";
 	context.fillRect(0,0,width,height);
-	var textBG=new Image();
-	textBG.onload = function(){
-		context.drawImage(textBG,0,0,3*width/4,height);
-	}
-	textBG.src="images/TextingBackground.jpg";
+	context.drawImage(textImg,0,0,3*width/4,height);
 	context.fillStyle="#FFFFFF";
 	context.font="32px Arial";
 	context.textAlign="center";
@@ -964,8 +970,6 @@ function playGame(){
 
 
 			//Phone
-			phoneImg=new Image();
-			phoneImg.src="images/Phone.png";
 			context.drawImage(phoneImg,width/2+(width/2-height/2)/2,0,height/2,height);
 			//Math Question
 			context.fillStyle="#000000";

@@ -19,12 +19,16 @@ var height=canvas.height;
 var context=canvas.getContext("2d");
 //Right cars even, left cars odd
 var carImages=[null,null,null,null,null,null,null,null,null,null,null,null,null,null];
-
+var barBG=new Image();
 var songs=[null];
 var sounds=[null,null,null,null,null,null];
 
 function onStart(){
-	loadImage(0);
+	barBG.src="images/BarBackground.jpg";
+	barBG.onload=function(){
+		context.fillRect(width/4,3*height/5,width/30,height/20);
+		loadImage(0);
+	}
 	context.fillStyle="#424242";
 	context.fillRect(0,0,width,height);
 	context.fillStyle="#FFEB3B";
@@ -40,7 +44,7 @@ function onStart(){
 		}
 		carImages[index]=new Image();
 		carImages[index].src="images/Car"+side+(Math.floor(index/2)+1)+".png";
-		context.fillRect(width/4,3*height/5,index*width/28,height/20);
+		context.fillRect(width/4,3*height/5,(index+1)*width/30,height/20);
 		if(index===carImages.length-1){
 			carImages[index].onload = function(){
 				loadSounds();
@@ -92,11 +96,7 @@ function onStart(){
 function startGame(){
 	context.fillStyle="#424242";
 	context.fillRect(0,0,width,height);
-	var bar=new Image();
-	bar.onload = function(){
-		context.drawImage(bar,0,0,3*width/4,height);
-	}
-	bar.src="images/BarBackground.jpg";
+	context.drawImage(barBG,0,0,3*width/4,height);
 	context.fillStyle="#FFEB3B";
 	context.font="32px Impact";
 	context.textAlign="center";
