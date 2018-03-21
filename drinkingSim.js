@@ -65,6 +65,9 @@ function onStart(){
 		sounds[4]=new Audio("audio/Drink.mp3");
 		sounds[5]=new Audio("audio/Hiccup.mp3");
 		
+		songs[0].onloadeddata=function(){
+			startGame();
+		}
 		/*loadA(0);
 
 		function loadA(index){
@@ -82,7 +85,7 @@ function onStart(){
 				}
 			}
 		}*/
-		startGame();
+		//startGame();
 	}
 }
 

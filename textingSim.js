@@ -81,7 +81,10 @@ function onStart(){
 				}
 			}
 		}*/
-		startGame();
+		songs[0].onloadeddata=function(){
+			startGame();
+		}
+		//startGame();
 	}
 }
 
