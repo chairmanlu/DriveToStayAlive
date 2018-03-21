@@ -817,7 +817,7 @@ function playGame(){
 				}
 				context.fillText("You made it "+distTraveled.toFixed(2)+" miles. Click the 'Retry' Button to restart.",width/2,2*height/5);
 				
-				if(bac>0.04){
+				if(bac>=0.04){
 					context.fillText("But remember: There are no restarts in life. Never Drink and Drive.",width/2,height/2);
 				}
 				canvas.addEventListener("click",retryClickListener,false);
