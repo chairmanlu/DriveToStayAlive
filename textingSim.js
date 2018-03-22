@@ -418,7 +418,7 @@ function playGame(){
 			for(var i=0;i<12;i++){
 				if(isInside(mousePos,numPad[i])){
 					sounds[3].play();
-					setTimeout(function(){sounds[3].load()},200);
+					setTimeout(function(){sounds[3].load()},500);
 					//alert(numPad[i].x+","+numPad[i].width+"|"+mousePos.x);
 					if(numPad[i].text==="Enter"){
 						if(parseInt(userNum)===answer){
