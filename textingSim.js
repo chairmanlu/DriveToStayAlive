@@ -743,11 +743,19 @@ function playGame(){
 				drawEverything(true);
 				canvas.removeEventListener("click",numPadListener);
 				var retryButton={
-					x:width/2,
+					x:2*width/5,
 					y: 5*height/8,
 					width: width/10,
 					height: height/10,
 					text: "Retry"
+				}
+
+				var menuButton={
+					x:3*width/5,
+					y: 5*height/8,
+					width: width/10,
+					height: height/10,
+					text: "Main Menu"
 				}
 				context.textAlign="center";
 				//console.log("filled");
@@ -760,6 +768,10 @@ function playGame(){
 				context.strokeRect(retryButton.x-retryButton.width/2,retryButton.y,retryButton.width,retryButton.height);
 				context.fillStyle="#FFFFFF";
 				context.fillText(retryButton.text,retryButton.x,retryButton.y+retryButton.height/2);
+
+				context.strokeRect(menuButton.x-menuButton.width/2,menuButton.y,menuButton.width,menuButton.height);
+				context.fillStyle="#FFFFFF";
+				context.fillText(menuButton.text,menuButton.x,menuButton.y+menuButton.height/2);
 
 				//Text
 				context.fillStyle="#FFFFFF";
@@ -785,6 +797,14 @@ function playGame(){
 						canvas.removeEventListener("click",retryClickListener);
 						context.clearRect(0,0,width,height);
 						playGame();
+						//alert("Clicked");
+						return;
+					}
+
+					if(isInside(mousePos,menuButton)){
+						canvas.removeEventListener("click",retryClickListener);
+						context.clearRect(0,0,width,height);
+						startGame();
 						//alert("Clicked");
 						return;
 					}

@@ -791,11 +791,19 @@ function playGame(){
 				drawEverything(true);
 
 				var retryButton={
-					x:width/2,
+					x:2*width/5,
 					y: 5*height/8,
 					width: width/10,
 					height: height/10,
 					text: "Retry"
+				}
+
+				var menuButton={
+					x:3*width/5,
+					y: 5*height/8,
+					width: width/10,
+					height: height/10,
+					text: "Main Menu"
 				}
 				//console.log("filled");
 				context.fillStyle="#424242";
@@ -808,6 +816,13 @@ function playGame(){
 				context.strokeRect(retryButton.x-retryButton.width/2,retryButton.y,retryButton.width,retryButton.height);
 				context.fillStyle="#FFEB3B";
 				context.fillText(retryButton.text,retryButton.x,retryButton.y+retryButton.height/2);
+
+				context.font="32px Impact";
+				context.strokeStyle="#FFEB3B";
+				context.lineWidth="4";
+				context.strokeRect(menuButton.x-menuButton.width/2,menuButton.y,menuButton.width,menuButton.height);
+				context.fillStyle="#FFEB3B";
+				context.fillText(menuButton.text,menuButton.x,menuButton.y+menuButton.height/2);
 
 				//Text
 				context.fillStyle="#FFEB3B";
@@ -839,6 +854,15 @@ function playGame(){
 						//alert("Clicked");
 						return;
 					}
+					if(isInside(mousePos,menuButton)){
+						canvas.removeEventListener("click",retryClickListener);
+						context.clearRect(0,0,width,height);
+						bac=0;
+						startGame();
+						//alert("Clicked");
+						return;
+					}
+
 				}
 			}
 		}
