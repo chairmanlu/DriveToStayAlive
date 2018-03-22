@@ -500,7 +500,7 @@ function playGame(){
 					//Up
 					car.accel=0.5;
 					if(bac>=0.04){
-						car.accel+=bac*10;
+						car.accel+=Math.random()+0.1;
 					}
 					if(!crashed){
 						sounds[1].play();
@@ -924,6 +924,7 @@ function playGame(){
 
 			//Dashboard
 			context.strokeStyle="#000000";
+			context.fillStyle="#000000";
 			context.lineWidth="4";
 			context.clearRect(0,11*height/12,width/2,height/12);
 			context.strokeRect(0,11*height/12,width/2,height/12);
